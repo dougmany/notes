@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spider Solitaire</title>
+    <style>
+        :root {
+            --card-width: 70px;
+            --card-height: 100px;
+            --card-gap: 5px;
+            --bg-color: #2d5e2e;
+            --card-radius: 5px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .controls {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #4a7c43;
+            border: 1px solid #6fa363;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5a9463;
+        }
+
+        #game-board {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 900px;
+            height: 100%;
+        }
+
+        /* Stock and Completed Areas */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            height: var(--card-height);
+            margin-bottom: 20px;
+        }
+
+        .stock-container {
+            position: relative;
+            width: var(--card-width);
+            height: var(--card-height);
+            cursor: pointer;
+        }
+
+        .completed-container {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .completed-slot {
+            width: var(--card-width);
+            height: var(--card-height);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: var(--card-radius);
+            background: rgba(0,0,0,0.1);
+        }
+
+        /* Tableau Columns */
+        .tableau {
+            display: flex;
+            justify-content: space-between;
+            flex-grow: 1;
+            padding-bottom: 20px;
+        }
+
+        .column {
+    position: relative;
+    width: var(--card-width);
+    min-height: var(--card-height);
+    border-radius: var(--card-radius);
+    
+}
+
+        .column::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: var(--card-width);
+            height: var(--card-height);
+            border: 2px dashed rgba(255,255,255,0.3);
+            border-radius: var(--card-radius) var(--card-radius) 0 0;
+            pointer-events: none;
+            background: rgba(0,0,0,0.1);
+}
+
+        /* Card Styles */
+        .card {
+            position: absolute;
+            width: var(--card-width);
+            height: var(--card-height);
+            background-color: white;
+            border-radius: var(--card-radius);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.1s ease;
+        }
+
+        .card.red { color: #d40000; }
+        .card.black { color: #000000; }
+
+        .card-top, .card-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1;
+        }
+        
+        .card-bottom {
+            transform: rotate(180deg);
+        }
+
+        .card-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+        }
+
+        .card-back {
+            background: repeating-linear-gradient(
+                45deg,
+                #3b6bb3,
+                #3b6bb3 10px,
+                #285596 10px,
+                #285596 20px
+            );
+            border: 2px solid #fff;
+            cursor: default;
+        }
+        
+        .card-back .card-top, 
+        .card-back .card-bottom, 
+        .card-back .card-center {
+            display: none;
+        }
+
+        /* States */
+        .card.selected {
+            box-shadow: 0 0 0 3px #ffff00, 2px 2px 5px rgba(0,0,0,0.5);
+            z-index: 100 !important; /* Ensure selected card is on top */
+        }
+
+        .card.dragging {
+            opacity: 0.9;
+            z-index: 1000;
+        }
+
+        /* Column Interaction */
+        .column.highlight {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        /* Completed Pile Animation */
+        .completed-card {
+            position: relative;
+            border: 2px solid gold;
+            box-shadow: 0 0 10px gold;
+        }
+
+        /* Modal */
+        #win-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2000;
+        }
+        #win-modal h2 {
+            font-size: 3rem;
+            color: gold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Spider Solitaire</h1>
+    <div class="controls">
+        <select id="difficulty" style="padding: 5px; border-radius: 4px;">
+            <option value="1">1 Suit (Easy)</option>
+            <option value="2">2 Suits (Medium)</option>
+            <option value="4">4 Suits (Hard)</option>
+        </select>
+        <button onclick="game.undo()">Undo</button>
+        <button onclick="game.restart()">New Game</button>
+    </div>
+</header>
+
+<div id="game-board">
+    <div class="top-row">
+        <div class="stock-container" onclick="game.dealCards()">
+            <!-- Stock pile rendered here -->
+        </div>
+        <div class="completed-container" id="completed-area">
+            <!-- Completed sets rendered here -->
+        </div>
+    </div>
+
+    <div class="tableau" id="tableau">
+        <!-- 10 Columns rendered here -->
+    </div>
+</div>
+
+<div id="win-modal">
+    <h2>YOU WIN!</h2>
+    <button onclick="game.restart()">Play Again</button>
+</div>
+
+<script>
+/**
+ * Spider Solitaire Implementation
+ */
+
+const SUITS = {
+    spades:   { symbol: '♠', color: 'black' },
+    hearts:   { symbol: '♥', color: 'red' },
+    clubs:    { symbol: '♣', color: 'black' },
+    diamonds: { symbol: '♦', color: 'red' }
+};
+
+const RANKS = [
+    { name: 'A', value: 1 },
+    { name: '2', value: 2 },
+    { name: '3', value: 3 },
+    { name: '4', value: 4 },
+    { name: '5', value: 5 },
+    { name: '6', value: 6 },
+    { name: '7', value: 7 },
+    { name: '8', value: 8 },
+    { name: '9', value: 9 },
+    { name: '10', value: 10 },
+    { name: 'J', value: 11 },
+    { name: 'Q', value: 12 },
+    { name: 'K', value: 13 }
+];
+
+class Card {
+    constructor(suit, rank, id) {
+        this.suit = suit;
+        this.rank = rank; // { name, value }
+        this.id = id;
+        this.faceUp = false;
+    }
+
+    get color() {
+        return SUITS[this.suit].color;
+    }
+
+    get symbol() {
+        return SUITS[this.suit].symbol;
+    }
+
+    get rankValue() {
+        return this.rank.value;
+    }
+}
+
+class SpiderGame {
+    constructor() {
+        this.tableau = []; // 10 columns
+        this.stock = [];
+        this.completedSets = 0;
+        this.history = []; // For Undo
+        this.selectedCard = null; // { colIndex, cardIndex }
+        this.suitCount = 1;
+        this.completedSuits = []; // Track suit of each completed set
+        
+        this.init();
+    }
+
+    init() {
+        // Bind events
+        document.getElementById('difficulty').addEventListener('change', (e) => {
+            this.suitCount = parseInt(e.target.value);
+            this.restart();
+        });
+        
+        // Initial start
+        this.restart();
+    }
+
+    createDeck() {
+        let deck = [];
+        let suitKeys = Object.keys(SUITS);
+        
+        // Limit suits based on difficulty
+        // 1 Suit: 8 sets of Spades
+        // 2 Suits: 4 sets of Spades, 4 sets of Hearts
+        // 4 Suits: 2 sets of all
+        
+        let suitsToUse = [];
+        if (this.suitCount === 1) {
+            suitsToUse = ['spades', 'spades', 'spades', 'spades', 'spades', 'spades', 'spades', 'spades'];
+        } else if (this.suitCount === 2) {
+            suitsToUse = ['spades', 'spades', 'spades', 'spades', 'hearts', 'hearts', 'hearts', 'hearts'];
+        } else {
+            for(let i=0; i<2; i++) suitsToUse.push(...suitKeys);
+        }
+
+        let idCounter = 0;
+        suitsToUse.forEach(suit => {
+            RANKS.forEach(rank => {
+                deck.push(new Card(suit, rank, idCounter++));
+            });
+        });
+
+        return deck;
+    }
+
+    shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    saveState() {
+        // Deep copy tableau and stock - properly clone Card objects
+        const tableauCopy = this.tableau.map(col => col.map(c => ({
+            suit: c.suit,
+            rank: { name: c.rank.name, value: c.rank.value },
+            id: c.id,
+            faceUp: c.faceUp
+        })));
+        const stockCopy = this.stock.map(c => ({
+            suit: c.suit,
+            rank: { name: c.rank.name, value: c.rank.value },
+            id: c.id,
+            faceUp: c.faceUp
+        }));
+        
+        this.history.push({
+            tableau: tableauCopy,
+            stock: stockCopy,
+            completedSets: this.completedSets,
+            selectedCard: null // Clear selection on undo stack
+        });
+        
+        // Limit history size
+        if(this.history.length > 50) this.history.shift();
+    }
+
+    undo() {
+        if (this.history.length === 0) return;
+        const state = this.history.pop();
+        this.tableau = this.restoreTableau(state.tableau);
+        this.stock = this.restoreStock(state.stock);
+        this.completedSets = state.completedSets;
+        this.selectedCard = null;
+        this.render();
+    }
+
+    restoreTableau(tableauData) {
+        return tableauData.map(col => col.map(c => {
+            const card = new Card(c.suit, { name: c.rank.name, value: c.rank.value }, c.id);
+            card.faceUp = c.faceUp;
+            return card;
+        }));
+    }
+
+    restoreStock(stockData) {
+        return stockData.map(c => {
+            const card = new Card(c.suit, { name: c.rank.name, value: c.rank.value }, c.id);
+            card.faceUp = c.faceUp;
+            return card;
+        });
+    }
+
+    restart() {
+        const deck = this.shuffle(this.createDeck());
+        
+        // Reset State
+        this.tableau = Array.from({ length: 10 }, () => []);
+        this.stock = [];
+        this.completedSets = 0;
+        this.completedSuits = []; // clear completed suits
+        this.history = [];
+        this.selectedCard = null;
+
+        // Deal Initial Tableau (40 cards)
+        // 4 rows of 10 cards
+        // Rows 1-3 face down, Row 4 face up
+        for (let i = 0; i < 10; i++) {
+            for (let row = 0; row < 4; row++) {
+                let card = deck.pop();
+                if (row === 3) card.faceUp = true;
+                this.tableau[i].push(card);
+            }
+        }
+
+        // Remaining cards go to stock
+        this.stock = deck;
+
+        document.getElementById('win-modal').style.display = 'none';
+        this.render();
+    }
+
+    dealCards() {
+        if (this.stock.length === 0) return;
+
+        this.saveState();
+
+        // Deal 10 cards, 1 to each column
+        // Note: Standard Spider deals to ALL columns that have cards. 
+        // If a column is empty, does it get a card? Yes.
+        // But wait, usually we deal 10 cards. 
+        // If we have 10 columns, we put 1 card in each.
+        
+        for (let i = 0; i < 10; i++) {
+            if (this.stock.length > 0) {
+                let card = this.stock.pop();
+                card.faceUp = true;
+                this.tableau[i].push(card);
+            }
+        }
+
+        this.render();
+        this.checkCompletedSets();
+    }
+
+    handleCardClick(colIndex, cardIndex) {
+        // If clicking the same card, deselect
+        if (this.selectedCard && 
+            this.selectedCard.colIndex === colIndex && 
+            this.selectedCard.cardIndex === cardIndex) {
+            this.selectedCard = null;
+            this.render();
+            return;
+        }
+
+        const column = this.tableau[colIndex];
+        const clickedCard = column[cardIndex];
+
+        // If a card is already selected, try to move
+        if (this.selectedCard) {
+            this.attemptMove(this.selectedCard.colIndex, this.selectedCard.cardIndex, colIndex);
+            return;
+        }
+
+        // Cannot select face down cards
+        if (!clickedCard.faceUp) return;
+
+        // Select the card and all cards below it (since they must be in sequence to move)
+        // In Spider, you can only move a stack that is in descending sequence and all same suit.
+        // So we check if the stack below the clicked card is valid.
+        if (this.isValidStack(column, cardIndex)) {
+            this.selectedCard = { colIndex, cardIndex };
+            this.render();
+        } else {
+            // If invalid stack, just select the single card if it's the top one?
+            // Or shake to indicate error?
+            // Usually in Spider, if you click a card in the middle of a broken sequence, nothing happens.
+            // If it's the top card, it's selected.
+            if (cardIndex === column.length - 1) {
+                 this.selectedCard = { colIndex, cardIndex };
+                 this.render();
+            }
+        }
+    }
+
+    handleColumnClick(colIndex) {
+        // If a card is selected and we click a different column, try to move
+        if (this.selectedCard && this.selectedCard.colIndex !== colIndex) {
+            this.attemptMove(this.selectedCard.colIndex, this.selectedCard.cardIndex, colIndex);
+        }
+    }
+
+    isValidStack(column, startIndex) {
+        // Check if cards from startIndex to end are in descending sequence AND all same suit
+        for (let i = startIndex; i < column.length - 1; i++) {
+            if (column[i].rankValue !== column[i+1].rankValue + 1) {
+                return false;
+            }
+            // Check suit matching
+            if (column[i].suit !== column[i+1].suit) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    attemptMove(fromColIndex, fromCardIndex, toColIndex) {
+        const sourceCol = this.tableau[fromColIndex];
+        const targetCol = this.tableau[toColIndex];
+        
+        const movingStack = sourceCol.slice(fromCardIndex);
+        const targetCard = targetCol.length > 0 ? targetCol[targetCol.length - 1] : null;
+
+        // Validation Rules:
+        // 1. Empty column accepts anything.
+        // 2. Non-empty column: Target rank must be exactly 1 higher than the bottom of the moving stack.
+        // 3. All cards in the moving stack must be the same suit (Standard Spider rule)
+
+        let validMove = false;
+
+        if (!targetCard) {
+            validMove = true;
+        } else {
+            // Check rank difference
+            const movingBottomRank = movingStack[0].rankValue;
+            if (targetCard.rankValue === movingBottomRank + 1) {
+                validMove = true;
+            }
+        }
+
+        if (validMove) {
+            // Check that all cards in the moving stack are the same suit
+            const firstSuit = movingStack[0].suit;
+            for (let i = 1; i < movingStack.length; i++) {
+                if (movingStack[i].suit !== firstSuit) {
+                    validMove = false;
+                    break;
+                }
+            }
+        }
+
+        if (validMove) {
+            this.saveState();
+            
+            // Execute Move
+            // 1. Remove from source
+            sourceCol.splice(fromCardIndex);
+            
+            // 2. Reveal new top card of source if it exists and is face down
+            if (sourceCol.length > 0) {
+                sourceCol[sourceCol.length - 1].faceUp = true;
+            }
+
+            // 3. Add to target
+            movingStack.forEach(card => targetCol.push(card));
+
+            // 4. Clear selection
+            this.selectedCard = null;
+
+            // 5. Check for completed sets
+            this.checkCompletedSets();
+            
+            this.render();
+        } else {
+            // Invalid move, just select the new card if it's valid, or deselect
+            // If clicked on a valid card in the new column, switch selection
+            // Find the card clicked in the target column?
+            // Since handleColumnClick doesn't know WHICH card, we rely on handleCardClick
+            // But if we clicked the column background, we just deselect.
+            this.selectedCard = null;
+            this.render();
+        }
+    }
+
+    checkCompletedSets() {
+        // Check every column for a completed run (K down to A) of the same suit
+        for (let colIndex = 0; colIndex < this.tableau.length; colIndex++) {
+            const col = this.tableau[colIndex];
+            if (col.length < 13) continue;
+
+            // Check the last 13 cards
+            const potentialSet = col.slice(-13);
+            
+            // 1. Must be exactly 13 cards
+            if (potentialSet.length !== 13) continue;
+
+            // 2. Must be descending (K -> A)
+            // Rank values should be 13, 12, ... 1
+            let isSequence = true;
+            for (let i = 0; i < 13; i++) {
+                if (potentialSet[i].rankValue !== 13 - i) {
+                    isSequence = false;
+                    break;
+                }
+            }
+
+            if (!isSequence) continue;
+
+            // 3. Must be same suit
+            const firstSuit = potentialSet[0].suit;
+            let isSameSuit = true;
+            for (let i = 1; i < 13; i++) {
+                if (potentialSet[i].suit !== firstSuit) {
+                    isSameSuit = false;
+                    break;
+                }
+            }
+
+            if (isSameSuit) {
+                // FOUND A SET!
+                this.saveState(); // Save before removing
+                
+                // Remove the cards
+                col.splice(col.length - 13, 13);
+                
+                // Handle the exposed card
+                if (col.length > 0) {
+                    col[col.length - 1].faceUp = true;
+                }
+
+                this.completedSets++;
+                this.completedSuits.push(firstSuit); // Store suit of completed set
+                // Recursively check again in case this creates another set? 
+                // Unlikely in one move, but good practice.
+                this.checkCompletedSets(); 
+                this.render();
+                return; // Break to avoid index issues if we modified array
+            }
+        }
+        
+        this.checkWin();
+    }
+
+    checkWin() {
+        // Check if all cards are gone from tableau and stock
+        const cardsLeft = this.tableau.reduce((acc, col) => acc + col.length, 0) + this.stock.length;
+        if (cardsLeft === 0 && this.completedSets === 8) {
+            document.getElementById('win-modal').style.display = 'flex';
+        }
+    }
+
+    render() {
+        const tableauEl = document.getElementById('tableau');
+        tableauEl.innerHTML = '';
+
+        // Render Columns
+        this.tableau.forEach((col, colIndex) => {
+            const colEl = document.createElement('div');
+            colEl.className = 'column';
+            colEl.onclick = () => this.handleColumnClick(colIndex);
+
+            col.forEach((card, cardIndex) => {
+                const cardEl = this.createCardElement(card);
+                
+                // Positioning for Solitaire overlap
+                cardEl.style.top = `${cardIndex * 35}px`; // Increased overlap for better visual stacking
+                
+                // Z-index: reverse order so earlier cards are behind
+                cardEl.style.zIndex = cardIndex;
+
+                // Selection styling
+                if (this.selectedCard && 
+                    this.selectedCard.colIndex === colIndex && 
+                    this.selectedCard.cardIndex === cardIndex) {
+                    cardEl.classList.add('selected');
+                    // If a stack is selected, highlight the whole stack
+                    // We'll handle this by just highlighting the top of the selection visually?
+                    // Actually, let's just highlight the specific card, 
+                    // but the logic handles the whole stack.
+                    // To make it look good, we might want to lift the whole stack.
+                    // For simplicity in this version: highlight the base card.
+                }
+
+                // Click event
+                cardEl.onclick = (e) => {
+                    e.stopPropagation(); // Prevent column click
+                    this.handleCardClick(colIndex, cardIndex);
+                };
+
+                colEl.appendChild(cardEl);
+            });
+
+            tableauEl.appendChild(colEl);
+        });
+
+        // Render Stock
+        const stockEl = document.querySelector('.stock-container');
+        stockEl.innerHTML = '';
+        if (this.stock.length > 0) {
+            // Render a visual stack (face down)
+            const cardEl = document.createElement('div');
+            cardEl.className = 'card card-back';
+            // Stack visual effect
+            cardEl.style.boxShadow = '3px 3px 5px rgba(0,0,0,0.5)';
+            stockEl.appendChild(cardEl);
+            
+            // Count badge
+            if (this.stock.length > 1) {
+                const count = document.createElement('div');
+                count.innerText = this.stock.length;
+                count.style.position = 'absolute';
+                count.style.bottom = '-25px';
+                count.style.right = '0';
+                count.style.color = 'white';
+                count.style.fontSize = '14px';
+                stockEl.appendChild(count);
+            }
+        }
+
+        // Render Completed Area
+        const completedEl = document.getElementById('completed-area');
+        completedEl.innerHTML = '';
+        for(let i=0; i<8; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'completed-slot';
+            if (i < this.completedSets) {
+                // Render the completed set's suit (show a King of that suit)
+                const suit = this.completedSuits[i] || 'spades';
+                const k = new Card(suit, {name:'K', value:13}, 9999);
+                k.faceUp = true;
+                const cardEl = this.createCardElement(k);
+                cardEl.classList.add('completed-card');
+                slot.appendChild(cardEl);
+            }
+            completedEl.appendChild(slot);
+        }
+    }
+
+    createCardElement(card) {
+        const el = document.createElement('div');
+        el.className = `card ${card.faceUp ? card.color : 'back'}`;
+        
+        if (card.faceUp) {
+            const top = document.createElement('div');
+            top.className = 'card-top';
+            top.innerHTML = `<span>${card.rank.name}</span>`;
+            
+            const center = document.createElement('div');
+            center.className = 'card-center';
+            center.innerHTML = card.symbol;
+
+            const bottom = document.createElement('div');
+            bottom.className = 'card-bottom';
+            bottom.innerHTML = `<span>${card.rank.name}</span>`;
+
+            el.appendChild(top);
+            el.appendChild(center);
+            el.appendChild(bottom);
+        }
+
+        return el;
+    }
+}
+
+// Start Game
+const game = new SpiderGame();
+
+</script>
+</body>
+</html>
