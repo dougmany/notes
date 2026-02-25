@@ -1,901 +1,871 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
-<head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>adaptive_constitution_v2</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
-    }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
-    }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
-    }
-    img {
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
-    }
-    blockquote {
-      margin: 1em 0 1em 1.7em;
-      padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
-      color: #606060;
-    }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      background-color: #1a1a1a;
-      border: none;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
-  </style>
-</head>
-<body>
-<p><strong>THE ADAPTIVE CONSTITUTION</strong></p>
-<p>A Governance Operating System for the United States</p>
-<p>─────────────────────────────────────────────────────</p>
-<p><em>Synthesizing Five Governance Frameworks and Global Constitutional
-Best Practices</em></p>
-<p><em>to Rebuild Public Trust</em></p>
-<table>
-<colgroup>
-<col style="width: 50%" />
-<col style="width: 50%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><strong>Governance Frameworks</strong></td>
-<td><strong>Constitutional Models</strong></td>
-</tr>
-<tr class="even">
-<td><strong>Holacracy</strong> • <strong>Sociocracy</strong>
-<strong>Liquid Democracy</strong> <strong>Ostrom’s Polycentric
-Governance</strong> <strong>Range Voting Theory</strong></td>
-<td>Switzerland • Estonia Nordic Nations • Ireland New Zealand</td>
-</tr>
-</tbody>
-</table>
-<p>A Proposal for Discussion • February 2026</p>
-<p>Executive Summary: Why an Operating System?</p>
-<p>Trust in the U.S. federal government has been at or near historic
-lows for over a decade, hovering around 20%. This is not a partisan
-problem—it is a structural one. The existing Constitution, written for a
-world of horseback messengers, provides no mechanisms for continuous
-citizen feedback, no built-in transparency infrastructure, and no way
-for governance to adapt at the pace society now demands.</p>
-<p>This proposal treats the existing Constitution not as something to be
-discarded but as a kernel—the core of an operating system that needs new
-modules. It draws on five governance frameworks, each addressing a
-different layer of the problem:</p>
-<ul>
-<li><p><strong>Holacracy</strong> provides the organizational
-architecture: modular constitution, purpose-driven roles, explicit
-domains, and tension-driven adaptation.</p></li>
-<li><p><strong>Sociocracy</strong> (Holacracy’s parent framework)
-contributes the decision-making protocol: consent-based governance,
-double-linking between levels, and cybernetic feedback loops drawn from
-the science of steering.</p></li>
-<li><p><strong>Liquid Democracy</strong> solves the
-participation-at-scale problem: citizens can vote directly or delegate
-their voice topic-by-topic to trusted proxies, with instant
-recall—making continuous governance feasible for 330 million
-people.</p></li>
-<li><p><strong>Elinor Ostrom’s Polycentric Governance</strong> provides
-the empirical foundation: Nobel Prize-winning research proving that
-distributed, multi-center self-governance outperforms centralization,
-plus eight tested design principles for robust institutions.</p></li>
-<li><p><strong>Range Voting (Score Voting)</strong> supplies the
-feedback signal: 0–10 scores function as continuous weights—analogous to
-weights in a neural network—allowing the governance system to literally
-learn from its citizens.</p></li>
-</ul>
-<p>These frameworks are combined with proven constitutional features
-from the world’s highest-trust democracies—Switzerland’s direct
-democracy, Estonia’s digital infrastructure, the Nordic nations’
-transparency culture, Ireland’s citizens’ assemblies, and New Zealand’s
-responsive governance—into a coherent system designed specifically for
-the American context.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>The Core Analogy: Scores as Weights</strong></p>
-<p>In machine learning, model weights determine how much influence each
-input has on the output. In this framework, citizens’ 0–10 range scores
-on government performance serve the same function: they weight how much
-trust, funding, and authority flows to each role and agency. Low
-aggregate scores trigger mandatory review. High scores unlock expanded
-authority. The governance system literally learns from its citizens,
-continuously. Sociocracy calls this cybernetic feedback. Ostrom calls it
-monitoring with graduated sanctions. Range voting theory calls it
-Bayesian-optimal preference revelation. They are all describing the same
-principle: governance must have a feedback loop.</p></td>
-</tr>
-</tbody>
-</table>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>The Governance Stack: How the Five Frameworks Layer
-Together</strong></p>
-<p>Layer 1 — EMPIRICAL FOUNDATION: Ostrom’s Polycentric Governance
-(proof that distributed self-governance works; eight design principles
-for robust institutions). Layer 2 — DECISION-MAKING PROTOCOL: Sociocracy
-(consent-based decisions; double-linking between governance levels;
-cybernetic feedback). Layer 3 — ORGANIZATIONAL STRUCTURE: Holacracy
-(roles defined by purpose/domain/accountability; tension processing;
-modular constitution-as-OS). Layer 4 — CITIZEN PARTICIPATION: Liquid
-Democracy (topic-specific delegation; instant recall; scalable direct
-participation for millions). Layer 5 — FEEDBACK SIGNAL: Range Voting
-(0–10 scores as continuous gradient weights for elections, agency
-performance, regulatory review, and legislative priority).</p></td>
-</tr>
-</tbody>
-</table>
-<p>Part I: Foundational Principles</p>
-<p>Article 1: The Governance Operating System</p>
-<p><strong>Section 1.1 — Constitutional Kernel.</strong> The existing
-U.S. Constitution remains the kernel of this operating system. The Bill
-of Rights, separation of powers, and federalist structure are preserved
-as foundational and immutable. This Adaptive Constitution operates as a
-set of modules layered on top, providing mechanisms the Founders could
-not have anticipated but whose principles they would have recognized:
-transparency, accountability, citizen voice, and the ability to
-evolve.</p>
-<p><strong>Section 1.2 — Modular Architecture.</strong> Following
-Holacracy’s five-module constitution, governance is organized into
-distinct but interlocking modules: (1) Role and Structure Encoding, (2)
-Duties of Transparency, (3) Governance Process, (4) Operational Process,
-and (5) Citizen Feedback and Adaptation. Each module can be updated
-independently through defined processes, without requiring wholesale
-constitutional change—analogous to how an OS can update its networking
-stack without rewriting the file system.</p>
-<p><strong>Section 1.3 — Purpose-Driven Roles.</strong> Every government
-function, from cabinet secretaries to local zoning boards, must be
-defined by a clear purpose statement, explicit domains of authority, and
-enumerated accountabilities—mirroring how both Holacracy and Sociocracy
-define organizational roles. Sociocracy’s original formulation is
-adopted: a role consists of a purpose (why it exists), one or more
-domains (what it exclusively controls), and accountabilities (what it is
-expected to perform). No role exists without a stated purpose. No
-authority exists without a stated boundary.</p>
-<p><strong>Section 1.4 — Ostrom’s Design Principles as Constitutional
-Requirements.</strong> Every governance entity—from federal agencies to
-local circles—must satisfy Elinor Ostrom’s eight design principles for
-robust self-governing institutions, adapted for democratic governance:
-(1) Clearly defined boundaries of authority and membership; (2)
-Proportional equivalence between the costs citizens bear and the
-benefits they receive; (3) Collective-choice arrangements ensuring those
-affected by rules can participate in modifying them; (4) Monitoring of
-officials and outcomes by parties accountable to the citizens; (5)
-Graduated sanctions for rule violations; (6) Accessible, low-cost
-conflict resolution mechanisms; (7) Minimal recognition of the right of
-citizens to organize without external interference; (8) Nested
-enterprises—governance organized in multiple layers of nested circles,
-with each layer respecting the autonomy of the layers below. These
-principles are not aspirational. They are mandatory design
-specifications, verified through the Trust Dashboard (Article 2.3) and
-reviewed by Citizens’ Assemblies (Article 7).</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>Why Ostrom’s Principles Matter Here</strong></p>
-<p>Ostrom’s research at Indiana University studied hundreds of
-communities worldwide that successfully governed shared resources
-without either state control or privatization. Her empirical finding was
-that polycentric systems—multiple semi-autonomous decision centers
-taking each other into account—regularly outperformed centralized
-governance in efficiency, responsiveness, and equity. Her eight design
-principles distilled what made the successful cases work. They are, in
-effect, a tested specification for self-governance. Incorporating them
-makes this constitution’s architecture empirically grounded, not merely
-theoretically appealing.</p></td>
-</tr>
-</tbody>
-</table>
-<p>Article 2: The Trust Infrastructure</p>
-<p>Trust is not an aspiration—it is infrastructure. Drawing from
-Estonia’s digital governance model, the Nordic principle that
-transparency is the default state, and Sociocracy’s foundational duty of
-transparency, this article establishes trust as the measurable substrate
-of governance.</p>
-<p><strong>Section 2.1 — Radical Transparency by Default.</strong> All
-government actions, expenditures, and decisions are public by default.
-Classification and redaction require specific justification subject to
-independent review. Every dollar spent, every meeting held, every
-decision made generates a public log. This draws from Estonia’s
-principle that data transparency is the foundation of citizen trust, and
-from Sociocracy’s foundational duty that all members can expect
-transparency from each other—information cannot be siloed or withheld
-for political advantage.</p>
-<p><strong>Section 2.2 — The Citizen Data Sovereignty
-Principle.</strong> Adapting Estonia’s constitutional principle:
-citizens own their data. Government collects information about a citizen
-exactly once (the “once-only” principle). Citizens can see, in real
-time, which government entity accessed their information and why. Any
-unauthorized access is a criminal offense. Estonia’s X-Road system
-handled over 2.7 billion data queries in 2024 on this model; it is
-proven at scale.</p>
-<p><strong>Section 2.3 — The Trust Dashboard.</strong> A publicly
-accessible, real-time digital infrastructure displays the performance
-metrics of every government role and agency. Drawing from Holacracy’s
-GlassFrog (a living organizational wiki where all role definitions and
-meeting outputs are visible) and from Ostrom’s monitoring principle,
-every government function publishes its purpose, current objectives,
-spending, citizen satisfaction scores, and compliance with the Eight
-Design Principles. The Dashboard also displays whether each entity
-satisfies Ostrom’s requirement for clearly defined boundaries,
-proportional costs and benefits, and accessible conflict resolution.</p>
-<p>Part II: Range Voting as Continuous Governance Signal</p>
-<p>Article 3: Score Voting for Elections</p>
-<p>The current plurality voting system forces citizens into a binary
-choice that does not reflect the intensity or nuance of their
-preferences. Simulations consistently show that score voting produces
-lower Bayesian regret—the expected avoidable unhappiness from using a
-particular voting method—than any other common system. The Republic of
-Venice used a form of score voting for centuries and became one of the
-longest-lived democracies in world history.</p>
-<p><strong>Section 3.1 — Universal Score Voting.</strong> All
-single-winner elections use score voting on a 0–10 scale. Voters assign
-each candidate a score. The candidate with the highest average score
-wins. Voters may leave any candidate unscored (“no opinion”), which does
-not affect that candidate’s average. This eliminates the spoiler effect
-and wasted-vote problem that locks American politics into two-party
-dominance.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>Why 0–10? The Weight Analogy</strong></p>
-<p>A neural network learns by adjusting weights based on feedback. Each
-weight is not binary (on/off) but a gradient representing intensity.
-Similarly, a citizen scoring Candidate A at 8 and Candidate B at 6 is
-not just saying “I prefer A”—they are saying how much. This intensity
-signal, aggregated across millions, produces far richer democratic
-information than a simple binary tally. It allows the system to detect
-not just who wins, but how much mandate they carry. Sociocracy’s
-cybernetic tradition recognized this principle: governance requires
-continuous gradient feedback, not binary signals.</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Section 3.2 — Mandate Scoring.</strong> An elected official’s
-average score becomes their “mandate weight.” An official elected with
-an average of 7.2 has a stronger mandate than one elected with 4.1 (even
-though both won). Mandate weight is publicly displayed and factors into
-procedural rules: officials with mandate weights below 5.0 must submit
-major policy initiatives to a Citizens’ Assembly review before
-implementation.</p>
-<p><strong>Section 3.3 — Breaking Two-Party Domination.</strong> Score
-voting eliminates the spoiler effect. When scoring one candidate can
-never hurt another, citizens are free to honestly evaluate all options.
-Combined with democratized ballot access (any candidate collecting
-signatures equal to the square root of the last election’s voter count
-can appear on the ballot), this structurally breaks the duopoly that is
-a primary driver of distrust. Ostrom’s research supports this:
-institutional diversity—more varied political voices—produces more
-robust governance, just as biodiversity produces more resilient
-ecosystems.</p>
-<p>Article 4: Continuous Governance Scoring with Liquid Delegation</p>
-<p>Elections happen every few years. Trust erodes daily. This article
-extends the range voting principle from elections to ongoing governance,
-and solves the participation-at-scale problem through Liquid
-Democracy.</p>
-<p><strong>Section 4.1 — Quarterly Agency Scoring.</strong> Every
-quarter, any citizen may score (0–10) any federal agency or department
-they have interacted with or have an opinion about. Scores are weighted
-by demonstrated engagement (citizens who have actually used an agency’s
-services carry additional weight, though all scores count). Aggregate
-scores are published on the Trust Dashboard.</p>
-<p><strong>Section 4.2 — The Liquid Delegation Layer.</strong> Not every
-citizen can or wants to score every agency every quarter. Adapting
-Liquid Democracy: citizens may delegate their scoring authority to
-trusted proxies on a topic-by-topic basis. A nurse might serve as your
-healthcare-agency proxy; a teacher as your education proxy; an
-accountant as your IRS proxy. Delegation is: (a) topic-specific—you can
-delegate healthcare scoring to one person and defense scoring to
-another; (b) instantly revocable—you can reclaim your voice on any issue
-at any time; (c) transparent—all delegation chains are visible on the
-Trust Dashboard; and (d) overridable—even while delegated, you can
-directly score any agency, which automatically overrides your proxy’s
-score for that period. Proxies may further delegate (metadelegation),
-creating emergent trust networks that naturally elevate domain experts.
-This is what makes continuous governance scoring feasible for 330
-million people.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>Liquid Democracy: The Missing Scalability
-Layer</strong></p>
-<p>The fundamental challenge of direct democracy has always been scale:
-you cannot ask every citizen to have an informed opinion on every issue.
-Representative democracy solved this by bundling all issues into a
-single elected representative. Liquid Democracy unbundles that—you
-delegate only the issues you choose, keep the rest, and can change your
-mind instantly. It combines the accountability of direct democracy with
-the efficiency of representation. Germany’s Pirate Party tested it
-internally. Several blockchain-based organizations use it successfully.
-Taiwan’s vTaiwan platform uses related principles for crafting
-legislation. Combined with range scoring, it creates a governance
-feedback system that is both expressive (0–10 gradients, not binary) and
-scalable (delegation for issues you don’t have time for).</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Section 4.3 — Score-Triggered Reviews.</strong> When any
-agency’s rolling 12-month average score drops below 4.0, this
-automatically triggers a public review process. A randomly-selected
-Citizens’ Review Panel (adapted from Ireland’s Citizens’ Assembly model)
-convenes to examine the agency’s performance, hear testimony, and
-recommend reforms. This implements both Holacracy’s tension-processing
-principle and Ostrom’s design principle of graduated sanctions—the
-response is proportional to the severity of the problem, not a blunt
-hammer.</p>
-<p><strong>Section 4.4 — Sunset Scoring.</strong> Every regulation and
-program carries a built-in expiration date (default: 10 years). Before
-renewal, citizens and their liquid delegates score the regulation on a
-0–10 scale for effectiveness and necessity. Regulations scoring below
-5.0 on average cannot be renewed without a supermajority legislative
-vote plus Citizens’ Assembly endorsement. This prevents the accumulation
-of regulatory cruft—the governance equivalent of technical debt—and
-implements Sociocracy’s principle that no decision is permanent: every
-policy is “good enough for now, safe enough to try” and subject to
-review.</p>
-<p>Part III: Distributed Governance (The Polycentric Layer)</p>
-<p><em>This section synthesizes three complementary frameworks for
-distributed authority: Holacracy’s nested circles, Sociocracy’s
-double-linking, and Ostrom’s polycentric governance. Each solves a
-different problem. Together they create a governance architecture that
-is simultaneously decentralized <strong>and</strong> coherent.</em></p>
-<p>Article 5: Circles, Polycentricity, and Subsidiarity</p>
-<p><strong>Section 5.1 — The Subsidiarity Mandate.</strong> Authority
-defaults to the most local level of government capable of handling the
-issue. Federal government may only act in domains explicitly assigned to
-it or where a Citizens’ Assembly has determined that local handling is
-inadequate. This reverses the current drift toward federal
-centralization and is supported by Ostrom’s empirical finding that
-polycentric metropolitan areas—with many semi-autonomous decision
-centers—regularly outperformed centralized systems in both efficiency
-and responsiveness. Ostrom demonstrated this with police services,
-irrigation systems, fisheries, and forest management across dozens of
-countries.</p>
-<p><strong>Section 5.2 — Sociocratic Double-Linking (replacing simple
-liaison roles).</strong> Holacracy uses “Rep Links” and “Lead Links” to
-connect circles, but weakened Sociocracy’s more powerful original
-mechanism. This constitution adopts Sociocracy’s double-linking: each
-governance level has two structural connections to the level above. The
-first is a “Lead Link”—appointed by the higher circle to represent
-broader priorities downward. The second is a “Rep Link”—elected by the
-lower circle to represent local knowledge and concerns upward. Both
-participate fully in the decision-making of both circles. This creates a
-structural circuit that prevents the information asymmetry which erodes
-trust: every level speaks both up and down, through formally designated
-roles with explicit authority to participate.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>Why Double-Linking Matters for Trust</strong></p>
-<p>In the current U.S. system, information flows upward through lobbying
-(who can afford access) and downward through mandate (who has power).
-Double-linking replaces both with a structural, non-corrupt channel. The
-Rep Link is elected by the local circle specifically to carry local
-tensions to the higher level—they cannot be fired by the higher level
-for delivering unwelcome messages. The Lead Link carries broader context
-to the local level but cannot override local consent. Dutch companies
-using Sociocracy are exempt from labor laws requiring works councils,
-because the double-link already provides worker representation. Imagine
-that level of structural voice applied to government.</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Section 5.3 — Domain Clarity.</strong> Every government
-entity publishes its domains—the things it has exclusive authority to
-control—in a machine-readable format on the Trust Dashboard. Overlapping
-domains are explicitly flagged and resolved through a defined governance
-process. This satisfies Ostrom’s first design principle (clearly defined
-boundaries) and Holacracy’s core structural rule: once a role controls a
-domain, no other role may interfere with it without going through the
-governance process. Citizens can see instantly which entity is
-responsible for what.</p>
-<p><strong>Section 5.4 — Polycentric Experimentation.</strong> Ostrom’s
-research showed that polycentric systems encourage
-experimentation—different jurisdictions can try different approaches,
-and successful innovations spread through voluntary adoption rather than
-top-down mandate. This constitution institutionalizes this: states and
-local governance circles are explicitly empowered to experiment with
-alternative governance processes, policy approaches, and service
-delivery models. The Trust Dashboard tracks outcomes, and the Citizens’
-Assembly periodically reviews which experiments should be adopted more
-broadly. Failed experiments are valuable data, not failures of
-governance.</p>
-<p>Article 6: The Governance Process</p>
-<p>Sociocracy’s most powerful innovation is consent-based decision
-making. Holacracy adapted this into “integrative decision-making.” This
-article combines both, adding Switzerland’s citizen veto as a final
-safeguard.</p>
-<p><strong>Section 6.1 — Tension-Driven Legislation.</strong> Any
-citizen can formally register a “tension”—a perceived gap between how
-governance is and how it could be—through the digital Trust
-Infrastructure. Both Holacracy and Sociocracy use this concept: a
-tension is not a complaint but a sensed opportunity for improvement.
-Tensions that gather sufficient citizen score-weight (e.g., 10,000
-citizens scoring the tension at 7+ on a 0–10 importance scale) are
-formally processed through a defined legislative track. Citizens may
-also delegate their tension-scoring through the Liquid Delegation
-Layer.</p>
-<p><strong>Section 6.2 — Consent-Based Decision Making.</strong>
-Legislative decisions follow a combined Sociocratic-Holacratic process:
-(1) Present Proposal, (2) Clarifying Questions (round format—each person
-speaks once), (3) Reaction Round, (4) Amend and Clarify, (5) Objection
-Round, (6) Integration. Adopting Sociocracy’s standard: consent means
-“no paramount objections,” not consensus or agreement. An objection is
-valid only if a legislator can demonstrate that the proposal would cause
-harm to a defined governmental purpose, not merely that they dislike it.
-The result is “good enough for now, safe enough to try”—every policy
-carries a review date and may be amended as feedback comes in. This
-replaces the current system where filibusters and party-line voting
-substitute for substantive engagement with proposals.</p>
-<p><strong>Section 6.3 — The Swiss Veto.</strong> Adapting Switzerland’s
-optional referendum: any law passed by Congress can be challenged by
-citizens. If 1% of registered voters sign a challenge petition within
-100 days (equivalent to Switzerland’s system scaled to U.S. population),
-the law goes to a national score vote. Citizens may vote directly or
-through their liquid delegates for the relevant policy domain. If the
-average citizen score is below 5.0, the law is suspended and referred to
-a Citizens’ Assembly for review. This gives citizens the direct power
-that Swiss voters have exercised since 1874.</p>
-<p>Part IV: Deliberative Democracy Infrastructure</p>
-<p>Article 7: Citizens’ Assemblies</p>
-<p>Ireland’s Citizens’ Assemblies demonstrated that randomly-selected
-citizens, given expert information and structured deliberation, can
-reach nuanced consensus on issues that paralyze professional politicians
-for decades. Ireland resolved both marriage equality and abortion
-through this mechanism. This article institutionalizes the model,
-enhanced with Sociocratic process and Ostrom’s design principles.</p>
-<p><strong>Section 7.1 — Standing Citizens’ Assembly.</strong> A
-permanent institution composed of 150 randomly-selected citizens
-(demographically representative of the U.S. population) serving
-staggered 18-month terms. Members receive full salary, housing, and
-expert support. This body deliberates on constitutional amendments,
-agency reviews triggered by low scores, major policy tensions, and any
-issue referred to it by Congress, the President, or citizen petition.
-The Assembly satisfies Ostrom’s third design principle: those affected
-by governance rules can participate in modifying them.</p>
-<p><strong>Section 7.2 — Deliberative Process Standards.</strong>
-Following Ireland’s proven methodology, enhanced with Sociocratic
-meeting discipline: members hear expert testimony from multiple
-perspectives, review international comparisons, and consider citizen
-submissions. Deliberation uses Sociocracy’s round format—each person
-speaks once per round before anyone speaks twice, preventing domination
-by the most vocal. Decisions use the consent process (Section 6.2), not
-majority vote. All proceedings are publicly broadcast. An independent
-secretariat manages logistics and ensures balanced expert testimony.</p>
-<p><strong>Section 7.3 — Binding Recommendations.</strong> Unlike
-Ireland’s advisory model, some Citizens’ Assembly recommendations carry
-binding force: (1) recommendations on constitutional amendments proceed
-directly to national score vote; (2) agency reform recommendations must
-be implemented within 12 months or the responsible officials face
-automatic recall vote; (3) regulatory sunset reviews are binding.
-Congress may override with a two-thirds supermajority, but must publicly
-justify the override and the justification is subject to citizen scoring
-on the Trust Dashboard.</p>
-<p>Article 8: Digital Democratic Infrastructure</p>
-<p>Estonia proved that a nation can operate entirely digitally when
-infrastructure is built with trust at its foundation. This article
-adapts Estonia’s architecture, integrating it with the Liquid Democracy
-delegation system.</p>
-<p><strong>Section 8.1 — The National Trust Layer (X-Road
-Equivalent).</strong> A decentralized, blockchain-anchored data exchange
-system connecting all government agencies. Every data query is logged.
-Citizens can audit who accessed their information in real time. No
-central database exists—data remains distributed at the agency level but
-is interoperable through secure protocols. This is the infrastructure
-upon which the Trust Dashboard, Liquid Delegation, score voting, and
-tension registration all operate.</p>
-<p><strong>Section 8.2 — Secure Digital Identity and
-Delegation.</strong> A voluntary but universally available digital
-identity system enabling secure participation in all democratic
-processes: score voting, agency scoring, liquid delegation, tension
-registration, and Citizens’ Assembly lottery. The Liquid Delegation
-Layer operates through this identity system—citizens can set and revoke
-delegation preferences, see their delegation chains, and override proxy
-scores at any time. Physical alternatives must always exist for every
-digital process.</p>
-<p><strong>Section 8.3 — Open-Source Governance Code.</strong> All
-software systems used in democratic processes must be open-source,
-publicly auditable, and subject to continuous independent security
-review. No proprietary “black boxes” in democracy. Election tabulation
-code, scoring algorithms, delegation chain computation, and data
-exchange protocols are all published. The principle: if you cannot
-inspect it, you cannot trust it.</p>
-<p>Part V: Trust Accountability Mechanisms</p>
-<p>Article 9: Anti-Corruption Architecture</p>
-<p>The OECD identifies corruption as the single largest driver of
-government distrust worldwide. Nordic countries achieve high trust
-partly because corruption is structurally difficult. Ostrom’s research
-confirms: institutions that lack monitoring and graduated sanctions
-invariably fail. This article makes corruption structurally
-difficult.</p>
-<p><strong>Section 9.1 — Separation of Money and Governance.</strong>
-All campaigns are publicly funded. Private campaign contributions are
-prohibited. Lobbying contacts must be logged in real time on the Trust
-Dashboard with full transcripts. Former officials face a 5-year
-cooling-off period before entering lobbying or related industries. This
-implements Ostrom’s monitoring principle at the highest level of
-governance.</p>
-<p><strong>Section 9.2 — Independent Integrity Commission.</strong> An
-autonomous body, its members selected by Citizens’ Assembly lottery from
-qualified candidates, with authority to investigate any government
-official or entity. The Commission’s funding is constitutionally
-protected (a fixed percentage of federal revenue) and cannot be reduced
-by the entities it oversees. This satisfies Ostrom’s design principles
-of monitoring by parties accountable to the community and accessible
-conflict resolution.</p>
-<p><strong>Section 9.3 — Merit-Based Civil Service Protection.</strong>
-Career civil servants are hired and promoted based on merit, never
-political loyalty. This principle has near-universal public support (95%
-across all political affiliations). Civil servants swear to uphold the
-Constitution, not loyalty to any individual. Political appointees are
-limited to the top two levels of any agency.</p>
-<p>Article 10: Constitutional Evolution</p>
-<p><strong>Section 10.1 — The Adaptive Amendment Process.</strong>
-Constitutional amendments may be initiated through three paths: (1) the
-traditional congressional path; (2) Citizens’ Assembly recommendation
-proceeding directly to national score vote; or (3) citizen initiative,
-where a proposal gathering score-weighted support from 3% of the
-electorate (directly or through liquid delegates) proceeds to Citizens’
-Assembly review and then national score vote. Amendments require an
-average score above 6.5 from the national electorate plus average scores
-above 5.0 in at least 26 states—adapting Switzerland’s dual-majority
-requirement.</p>
-<p><strong>Section 10.2 — Immutable Core.</strong> Certain provisions
-are beyond amendment: the Bill of Rights, the principle of separation of
-powers, universal suffrage, the score voting system, the Citizens’
-Assembly institution, the Liquid Delegation Layer, and Ostrom’s Eight
-Design Principles as constitutional requirements. The operating system’s
-kernel is protected even as its modules evolve.</p>
-<p><strong>Section 10.3 — Decennial Constitutional Review.</strong>
-Every ten years, a specially convened Citizens’ Assembly of 300 members
-conducts a comprehensive review of the constitutional operating system.
-Which modules are working? Which need updates? What new modules should
-be added? This institutionalizes Sociocracy’s foundational principle
-that no decision is permanent and governance must continuously adapt,
-and implements Ostrom’s finding that institutional diversity requires
-ongoing cultivation.</p>
-<p>Part VI: Framework and Country Synthesis</p>
-<p>Governance Framework Contributions</p>
-<table>
-<colgroup>
-<col style="width: 19%" />
-<col style="width: 26%" />
-<col style="width: 24%" />
-<col style="width: 29%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><strong>Framework</strong></td>
-<td><strong>Key Contribution</strong></td>
-<td><strong>Trust Mechanism</strong></td>
-<td><strong>Where It Appears</strong></td>
-</tr>
-<tr class="even">
-<td><strong>Holacracy</strong></td>
-<td>Modular constitution-as-OS; purpose-driven roles; tension
-processing; domain clarity</td>
-<td>Clear authority boundaries; no hidden power; continuous
-adaptation</td>
-<td>Art. 1.2–1.3 (architecture), Art. 2.3 (Dashboard), Art. 5.3
-(domains), Art. 6.1 (tensions)</td>
-</tr>
-<tr class="odd">
-<td><strong>Sociocracy</strong></td>
-<td>Consent-based decisions; double-linking; cybernetic feedback; “good
-enough for now” principle</td>
-<td>Minority voice protected; structural up/down communication; no
-permanent decisions</td>
-<td>Art. 5.2 (double-linking), Art. 6.2 (consent process), Art. 4.4
-(sunset), Art. 7.2 (round format), Art. 10.3 (review)</td>
-</tr>
-<tr class="even">
-<td><strong>Liquid Democracy</strong></td>
-<td>Topic-specific delegation; instant recall; metadelegation creating
-trust networks</td>
-<td>Scalable participation; expertise flows naturally; continuous
-accountability</td>
-<td>Art. 4.2 (delegation layer), Art. 6.3 (Swiss veto via delegates),
-Art. 8.2 (digital delegation), Art. 10.1 (amendment via delegates)</td>
-</tr>
-<tr class="odd">
-<td><strong>Ostrom’s Polycentric Governance</strong></td>
-<td>Eight design principles; empirical proof distributed governance
-works; institutional diversity</td>
-<td>Monitoring + graduated sanctions; local knowledge valued;
-experimentation encouraged</td>
-<td>Art. 1.4 (design principles), Art. 3.3 (institutional diversity),
-Art. 4.3 (graduated review), Art. 5.1 &amp; 5.4 (subsidiarity +
-experimentation)</td>
-</tr>
-<tr class="even">
-<td><strong>Range Voting</strong></td>
-<td>0–10 scores as continuous gradient signal; lowest Bayesian regret;
-spoiler-free</td>
-<td>Expressive preferences; honest voting; continuous mandate
-measurement</td>
-<td>Art. 3 (elections), Art. 4 (agency scoring), Art. 4.4 (sunset
-scoring), Art. 6.1 (tension weighting), Art. 10.1 (amendment
-threshold)</td>
-</tr>
-</tbody>
-</table>
-<p>Country Constitutional Contributions</p>
-<table>
-<colgroup>
-<col style="width: 17%" />
-<col style="width: 25%" />
-<col style="width: 25%" />
-<col style="width: 31%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><strong>Country</strong></td>
-<td><strong>Original Feature</strong></td>
-<td><strong>Trust Mechanism</strong></td>
-<td><strong>U.S. Adaptation</strong></td>
-</tr>
-<tr class="even">
-<td><strong>Switzerland</strong></td>
-<td>Optional referendum (50,000 signatures challenge any law); popular
-initiative (100,000 signatures trigger constitutional vote)</td>
-<td>Citizens always have veto power; forces consensus-building; ~65%
-government satisfaction</td>
-<td>Swiss Veto (Art. 6.3): 1% of voters trigger score-vote review.
-Citizen Initiative (Art. 10.1): 3% score-weighted support triggers
-Assembly review + score vote. Liquid delegation makes both
-scalable.</td>
-</tr>
-<tr class="odd">
-<td><strong>Estonia</strong></td>
-<td>X-Road decentralized data exchange; 100% digital government; citizen
-data sovereignty; once-only data collection</td>
-<td>Full audit trail; citizens own data; every access logged; trust
-through transparency</td>
-<td>National Trust Layer (Art. 8.1); Citizen Data Sovereignty (Art.
-2.2); Digital Identity enabling Liquid Delegation (Art. 8.2)</td>
-</tr>
-<tr class="even">
-<td><strong>Nordic Nations</strong></td>
-<td>Radical transparency default; proportional representation; highest
-institutional trust globally</td>
-<td>Corruption structurally difficult; many voices represented; high
-social cohesion</td>
-<td>Transparency default (Art. 2.1); Score Voting breaking two-party
-lock (Art. 3.3); Anti-corruption architecture (Art. 9)</td>
-</tr>
-<tr class="odd">
-<td><strong>Ireland</strong></td>
-<td>Citizens’ Assembly: 99 randomly-selected citizens deliberating on
-constitutional issues; four consecutive assemblies</td>
-<td>Broke decades-long deadlock on marriage equality and abortion; high
-public legitimacy</td>
-<td>Standing Citizens’ Assembly (Art. 7.1) enhanced with Sociocratic
-process: permanent, 150 members, binding recommendations, consent-based
-decisions</td>
-</tr>
-<tr class="even">
-<td><strong>New Zealand</strong></td>
-<td>Periodic governance reviews; responsive legislative process;
-treaty-based recognition of diverse perspectives</td>
-<td>Governance adapts before crises force change; institutional
-humility</td>
-<td>Decennial Constitutional Review (Art. 10.3); Polycentric
-Experimentation (Art. 5.4)</td>
-</tr>
-</tbody>
-</table>
-<p>Conclusion: A Living System That Earns Trust</p>
-<p>The problem with American governance is not that the original design
-was bad—it was brilliant for its era. The problem is that it has no
-built-in mechanism for continuous adaptation and citizen feedback. The
-current system asks citizens to express their entire democratic will
-through a single binary choice every few years, then trust that the
-system will work without further input. It should be no surprise that
-trust has collapsed.</p>
-<p>This Adaptive Constitution treats governance as what it has always
-been: an operating system for organizing collective human action. Five
-frameworks, each proven in different contexts, address different layers
-of the challenge:</p>
-<p>Ostrom proved empirically that polycentric, distributed
-self-governance works—and identified the eight design principles that
-make it robust. Sociocracy provided the decision-making protocol:
-consent rather than consensus, double-linking rather than one-way
-hierarchies, and the cybernetic feedback loops that keep the system
-steering correctly. Holacracy packaged these insights into a modular
-constitution with purpose-driven roles, explicit domains, and
-tension-driven adaptation. Liquid Democracy solved the scale problem:
-topic-specific delegation with instant recall makes continuous citizen
-participation feasible for hundreds of millions. And range voting
-provides the gradient feedback signal that makes the whole system
-learn—not binary yes/no, but 0–10 intensity scores that function like
-weights in a neural network.</p>
-<p>No single country has solved governance. But the countries that come
-closest—the ones where citizens actually trust their institutions—share
-common features: transparency by default, citizen voice beyond
-elections, structural barriers to corruption, and the humility to build
-in mechanisms for their own evolution. This proposal combines those
-features with those five governance frameworks into a coherent system,
-adapted for America’s unique scale, diversity, and constitutional
-tradition.</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p><strong>The Founding Fathers Would Recognize This</strong></p>
-<p>James Madison wrote that the aim of every political Constitution “is
-or ought to be, first to obtain for rulers men who possess most wisdom
-to discern, and most virtue to pursue, the common good of society; and
-in the next place, to take the most effectual precautions for keeping
-them virtuous whilst they continue to hold their public trust.” Score
-voting addresses Madison’s first aim (selecting the best candidates).
-Continuous governance scoring, liquid delegation, transparency
-infrastructure, and Citizens’ Assemblies address his second (keeping
-them virtuous). Ostrom’s design principles codify what Madison intuited.
-Sociocracy’s consent process formalizes what the Constitutional
-Convention practiced. The operating system metaphor would be new to the
-Founders; the principles would not.</p></td>
-</tr>
-</tbody>
-</table>
-</body>
-</html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice 4.1.15  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Un-named">
+	<META NAME="CREATED" CONTENT="20260225;2402440">
+	<META NAME="CHANGEDBY" CONTENT="Un-named">
+	<META NAME="CHANGED" CONTENT="20260225;2402440">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 1in }
+		P { margin-bottom: 0.08in }
+		H1 { margin-top: 0.25in; margin-bottom: 0.14in; color: #1b2a4a }
+		H1.western { font-family: "Arial", sans-serif; font-size: 18pt }
+		H1.cjk { font-family: "Arial"; font-size: 18pt }
+		H1.ctl { font-family: "Arial"; font-size: 18pt }
+		H2 { margin-top: 0.19in; margin-bottom: 0.11in; color: #2a7f8e }
+		H2.western { font-family: "Arial", sans-serif; font-size: 15pt }
+		H2.cjk { font-family: "Arial"; font-size: 15pt }
+		H2.ctl { font-family: "Arial"; font-size: 15pt }
+		H3 { margin-top: 0.14in; margin-bottom: 0.08in; color: #1b2a4a }
+		H3.western { font-family: "Arial", sans-serif; font-size: 13pt }
+		H3.cjk { font-family: "Arial"; font-size: 13pt }
+		H3.ctl { font-family: "Arial"; font-size: 13pt }
+		A:link { color: #0563c1; so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" LINK="#0563c1" DIR="LTR">
+<P STYLE="margin-top: 1.81in; margin-bottom: 0in"><BR>
+</P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0.07in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=6 STYLE="font-size: 28pt"><SPAN STYLE="font-style: normal"><B>THE
+ADAPTIVE CONSTITUTION</B></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0.21in"><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=4 STYLE="font-size: 15pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">A
+Governance Operating System for the United States</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-top: 0.14in; margin-bottom: 0.14in"><FONT COLOR="#2a7f8e">&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</FONT></P>
+<P ALIGN=CENTER STYLE="margin-top: 0.14in; margin-bottom: 0.06in"><FONT COLOR="#666666"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><SPAN STYLE="font-weight: normal">Needs-Sensing
+ &bull;  Matched Voting  &bull;  Distributed Governance  &bull; 
+Continuous Feedback</SPAN></I></FONT></FONT></FONT></P>
+<P ALIGN=CENTER STYLE="margin-bottom: 0.28in"><FONT COLOR="#666666"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><I><SPAN STYLE="font-weight: normal">Synthesizing
+Five Governance Frameworks and Global Constitutional Best Practices</SPAN></I></FONT></FONT></FONT></P>
+<TABLE WIDTH=480 BORDER=1 BORDERCOLOR="#bbbbbb" CELLPADDING=7 CELLSPACING=0>
+	<COL WIDTH=225>
+	<COL WIDTH=225>
+	<TR VALIGN=TOP>
+		<TD WIDTH=225 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Governance
+			Frameworks</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=225 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Constitutional
+			Models</B></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=225>
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Holacracy
+			&bull; Sociocracy<BR>Liquid Democracy<BR>Ostrom&rsquo;s
+			Polycentric Governance<BR>Range Voting Theory</B></FONT></FONT></FONT><FONT COLOR="#8b4513"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B><BR>The
+			Bucket Theory (Needs-Sensing)</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=225>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt">Switzerland
+			&bull; Estonia<BR>Nordic Nations &bull; Ireland<BR>New Zealand</FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P ALIGN=CENTER STYLE="margin-top: 0.69in; margin-bottom: 0.14in"><FONT COLOR="#666666"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">A
+Proposal for Discussion  &bull;  February 2026</SPAN></SPAN></FONT></FONT></FONT></P>
+<H1 CLASS="western" STYLE="page-break-before: always">Executive
+Summary</H1>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">Trust
+in the U.S. federal government has been at or near historic lows for
+over a decade. This is not a partisan problem&mdash;it is a
+structural one. The existing Constitution provides no mechanisms for
+continuous citizen feedback, no built-in transparency infrastructure,
+and&mdash;most critically&mdash;no way to distinguish between what
+citizens actually need and what solutions they are currently fighting
+over.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>This
+proposal&rsquo;s central insight is that most political polarization
+is a solution-level fight masking need-level agreement.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+A farmer who ensures food security through land ownership and a city
+resident who ensures it through nutrition labels are filling the same
+bucket&mdash;sustenance&mdash;with different things. A rural gun
+owner seeking personal safety and an urban parent seeking the same
+safety through gun restrictions are filling the same
+bucket&mdash;security&mdash;from opposite ends. A governance system
+that asks only &ldquo;Which solution do you prefer?&rdquo; puts these
+people in opposition. A system that first asks &ldquo;What need are
+you trying to fill?&rdquo; reveals they are often aligned on what
+matters.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">We
+call this the Bucket Theory: people have the same fundamental needs
+(security, sustenance, belonging, agency, fairness) and fill those
+buckets with different things depending on their context, geography,
+culture, and available resources. The governance system&rsquo;s first
+job is to sense which buckets are at stake in any policy area and how
+different populations are filling them. Only then can it productively
+evaluate solutions&mdash;using voting methods matched to the specific
+information-extraction task at hand, not a one-size-fits-all
+approach.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
+reframes the entire purpose of democratic infrastructure. The
+document proposes a three-layer information system:</SPAN></SPAN></FONT></FONT></FONT></P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0.07in"><FONT COLOR="#8b4513"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Layer
+	1 &mdash; Needs-Sensing:</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+	Identify which human needs are at stake and how different
+	populations fill them. (The Bucket Theory)</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0.07in"><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Layer
+	2 &mdash; Solution Generation:</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+	Generate context-appropriate solutions per need, recognizing that
+	the same need may require different solutions in different
+	environments. (Ostrom&rsquo;s Polycentric Governance)</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0.07in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Layer
+	3 &mdash; Solution Evaluation:</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+	Evaluate solutions using the voting method matched to the dynamics
+	of the specific decision&mdash;not one method for everything, but
+	the right sensor for the right signal. (Matched Voting)</FONT></FONT></P>
+</UL>
+<P ALIGN=LEFT STYLE="margin-top: 0.08in; margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
+three-layer system is built on five governance frameworks (Holacracy,
+Sociocracy, Liquid Democracy, Ostrom&rsquo;s Polycentric Governance,
+and Range Voting) and proven constitutional features from the world&rsquo;s
+highest-trust democracies (Switzerland, Estonia, Nordic nations,
+Ireland, New Zealand).</SPAN></SPAN></FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part I:
+Foundational Principles</H1>
+<H2 CLASS="western">Article 1: The Governance Operating System</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+1.1 &mdash; Constitutional Kernel.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+The existing U.S. Constitution remains the kernel of this operating
+system. The Bill of Rights, separation of powers, and federalist
+structure are preserved as foundational and immutable. This Adaptive
+Constitution operates as modules layered on top.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+1.2 &mdash; Modular Architecture.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Following Holacracy&rsquo;s five-module constitution, governance is
+organized into distinct but interlocking modules that can be updated
+independently: (1) Role and Structure Encoding, (2) Duties of
+Transparency, (3) Needs-Sensing and Citizen Feedback, (4) Governance
+Process, and (5) Operational Process.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+1.3 &mdash; Purpose-Driven Roles.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Every government function must be defined by a clear purpose
+statement, explicit domains of authority, and enumerated
+accountabilities&mdash;following Holacracy and Sociocracy&rsquo;s
+role definitions. No role exists without a stated purpose. No
+authority exists without a stated boundary.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+1.4 &mdash; Ostrom&rsquo;s Design Principles as Constitutional
+Requirements.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Every governance entity must satisfy Elinor Ostrom&rsquo;s eight
+design principles for robust self-governing institutions: (1) Clearly
+defined boundaries; (2) Proportional costs and benefits; (3)
+Collective-choice arrangements; (4) Monitoring by accountable
+parties; (5) Graduated sanctions; (6) Accessible conflict resolution;
+(7) Right to self-organize; (8) Nested enterprises. These are
+mandatory design specifications verified through the Trust Dashboard
+and reviewed by Citizens&rsquo; Assemblies.</FONT></FONT></P>
+<H2 CLASS="western">Article 2: The Trust Infrastructure</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+2.1 &mdash; Radical Transparency by Default.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+All government actions, expenditures, and decisions are public by
+default. Drawing from Estonia&rsquo;s data transparency and
+Sociocracy&rsquo;s foundational duty that information cannot be
+siloed for political advantage.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+2.2 &mdash; Citizen Data Sovereignty.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Citizens own their data. Government collects information exactly once
+(Estonia&rsquo;s once-only principle). Citizens see in real time
+which entity accessed their information and why.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+2.3 &mdash; The Trust Dashboard.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+A publicly accessible, real-time digital infrastructure displays the
+performance metrics, purpose statements, domain definitions, and
+citizen satisfaction scores of every government entity. Drawing from
+Holacracy&rsquo;s GlassFrog and Ostrom&rsquo;s monitoring principle.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part II: The
+Needs-Sensing Layer</H1>
+<H2 CLASS="western">Article 3: The Bucket Theory &mdash; Sensing
+Needs Before Evaluating Solutions</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">This
+article introduces the foundational principle that reshapes the
+entire governance framework: </FONT></FONT><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>governance
+must sense what citizens need before asking them to evaluate
+solutions.</B></FONT></FONT></FONT></P>
+<H3 CLASS="western">The Core Principle</H3>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">People
+have the same fundamental needs&mdash;security, sustenance,
+belonging, agency, fairness, dignity, health, meaning&mdash;and they
+fill those needs with different things depending on their context. A
+farmer ensures sustenance through land ownership. A city dweller
+ensures sustenance through grocery access and nutrition labels. A
+religious person finds community in a congregation. A secular person
+finds it in a civic association or school community. The needs are
+universal; the solutions are contextual.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">We
+call these needs &ldquo;buckets.&rdquo; Every person carries the same
+set of buckets. What differs is what they fill each bucket with&mdash;and
+that filling depends on geography, culture, available resources,
+personal history, and community norms. A solution that fills a bucket
+effectively in one context may be useless or harmful in another, not
+because the solution is inherently bad but because it is being
+applied to the wrong terrain.</SPAN></SPAN></FONT></FONT></FONT></P>
+<TABLE WIDTH=624 BORDER=1 BORDERCOLOR="#8b4513" CELLPADDING=7 CELLSPACING=0>
+	<COL WIDTH=608>
+	<TR>
+		<TD WIDTH=608 VALIGN=TOP BGCOLOR="#f0f4f8">
+			<P STYLE="margin-bottom: 0.06in"><FONT COLOR="#8b4513"><FONT FACE="Arial, serif"><FONT SIZE=3><B>The
+			Bucket Theory</B></FONT></FONT></FONT></P>
+			<P><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt">Universal
+			needs (buckets): security, sustenance, belonging, agency,
+			fairness, dignity, health, meaning. These are the same for all
+			people.<BR><BR>Contextual solutions (what fills the buckets):
+			differ by geography, culture, economy, community, personal
+			history. A rural community fills the security bucket differently
+			than an urban one. A coastal economy fills the sustenance bucket
+			differently than an agricultural one. A tight-knit religious
+			community fills the belonging bucket differently than a university
+			town.<BR><BR>The governance insight: most political conflict is
+			not about needs&mdash;it is about solutions. People who agree on
+			what they need are put into opposition by a system that only asks
+			which solution they prefer. The Bucket Theory reorients governance
+			to first identify the shared need, then generate
+			context-appropriate solutions, then evaluate those solutions using
+			matched methods.</FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0.14in"><BR><BR>
+</P>
+<H3 CLASS="western">Why This Changes Everything About Voting</H3>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Every
+voting system is a sensor.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Plurality voting senses peak preference. Ranked choice senses ordinal
+ordering. Score voting senses preference intensity. Approval voting
+senses acceptability thresholds. Consent voting senses objections.
+But </FONT></FONT><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>none
+of them sense what need is driving the preference.</B></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">When
+a citizen scores a gun policy at 2 out of 10, the score tells you
+they dislike the policy. It does not tell you whether they dislike it
+because it threatens their personal safety (security bucket), their
+cultural identity (belonging bucket), their livelihood (sustenance
+bucket), or their sense of autonomy (agency bucket). Without this
+information, the governance system is optimizing against a signal it
+does not understand&mdash;like a control system adjusting an actuator
+without knowing which variable the sensor is measuring.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">From
+control theory: a controller that is tuned for one plant will
+oscillate or fail when applied to a different plant with different
+dynamics. The &ldquo;best&rdquo; controller in one domain can be the
+worst in another. Similarly, the &ldquo;best&rdquo; voting method in
+one governance context can produce pathological results in another.
+Tuning for generality reduces performance everywhere. The solution is
+not to find the single best method but to match the method to the
+dynamics of the specific decision.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">But
+even matched voting methods are insufficient without needs-sensing.
+</FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>The
+Bucket Theory adds the missing upstream layer: before you can match a
+voting method to a decision, you need to know what needs are actually
+at stake.</B></FONT></FONT></P>
+<H3 CLASS="western">The Polarization Diagnosis</H3>
+<TABLE WIDTH=624 BORDER=1 BORDERCOLOR="#8b4513" CELLPADDING=7 CELLSPACING=0>
+	<COL WIDTH=608>
+	<TR>
+		<TD WIDTH=608 VALIGN=TOP BGCOLOR="#f0f4f8">
+			<P STYLE="margin-bottom: 0.06in"><FONT COLOR="#8b4513"><FONT FACE="Arial, serif"><FONT SIZE=3><B>Most
+			Political Polarization Is a Solution-Level Fight Masking
+			Need-Level Agreement</B></FONT></FONT></FONT></P>
+			<P><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt">Consider
+			gun policy. Person A (rural) owns firearms for personal
+			safety&mdash;police response time is 45 minutes. Person B (urban)
+			wants gun restrictions for personal safety&mdash;school shootings
+			are their primary fear. Person C owns guns for cultural
+			identity&mdash;hunting is a multi-generational family practice.
+			Person D wants restrictions for community wellbeing&mdash;gun
+			violence has fractured their neighborhood. Persons A and B are
+			filling the same bucket (security) with opposite solutions.
+			Persons C and D are filling the same bucket (belonging) with
+			opposite solutions. A voting system that asks &ldquo;More
+			regulation or less?&rdquo; puts A against B and C against D. A
+			needs-sensing system that first asks &ldquo;What are you
+			protecting?&rdquo; reveals that A and B agree on the need
+			(security) and differ only on the contextually appropriate
+			solution. This is not a philosophical observation&mdash;it is a
+			structural diagnosis. The current governance system&rsquo;s
+			inability to distinguish needs from solutions is a primary driver
+			of polarization. The Bucket Theory provides the fix: sense needs
+			first, then generate and evaluate context-appropriate solutions.</FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0.14in"><BR><BR>
+</P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
+diagnosis applies far beyond gun policy. Healthcare debates mask
+shared needs for health security filled by employer insurance,
+government programs, community health co-ops, or traditional healing
+depending on context. Education debates mask shared needs for child
+development filled by public schools, homeschooling, religious
+education, or apprenticeship. Immigration debates mask shared needs
+for economic security and community stability filled by very
+different solutions in border towns versus tech hubs. In each case,
+the need is shared; the fight is about solutions.</SPAN></SPAN></FONT></FONT></FONT></P>
+<H3 CLASS="western">The Needs-Sensing Mechanisms</H3>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+3.1 &mdash; Citizen Need-Tagging at Scale.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+When citizens engage with any policy process&mdash;scoring an agency,
+registering a tension, participating in a Swiss Veto petition, or
+submitting testimony&mdash;they are invited (not required) to tag
+which need(s) they are addressing. Tags draw from a structured
+taxonomy of fundamental needs (security, sustenance, belonging,
+agency, fairness, dignity, health, meaning) that can be expanded
+through Citizens&rsquo; Assembly deliberation. Citizens also
+describe, in their own words or from structured options, what they
+are currently using to fill that need. Over time, this creates a
+living map of how different populations fill different buckets&mdash;the
+Needs Map&mdash;visible on the Trust Dashboard.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+3.2 &mdash; Citizens&rsquo; Assembly Needs-Mapping.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+For complex or contested policy areas, a Citizens&rsquo; Assembly
+panel conducts deep needs-mapping. Using structured deliberation
+(Sociocratic round format), randomly-selected citizens from affected
+communities identify: (a) which needs are actually at stake; (b) how
+different populations in different contexts are currently filling
+those needs; (c) where need-level agreement exists beneath
+solution-level conflict; and (d) what context factors make different
+solutions appropriate for different populations. This needs-map is
+published before any solution-evaluation voting occurs.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+3.3 &mdash; The Needs Map on the Trust Dashboard.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+The Trust Dashboard displays, for every active policy area, a visual
+map showing: which needs are at stake (the buckets); how different
+populations fill them (the solutions); where shared needs exist
+across politically opposed groups; and what context factors
+differentiate appropriate solutions. This map is the first thing any
+legislator, Citizens&rsquo; Assembly member, or citizen sees when
+engaging with a policy area&mdash;before any voting on solutions
+begins.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+3.4 &mdash; The Niche Principle.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Every persistent solution&mdash;every policy, regulation, cultural
+practice, or institutional arrangement that has survived over
+time&mdash;has found a niche. It fills a real need for real people in
+a real context. Before proposing to eliminate or replace any existing
+solution, the governance system must first identify what need it
+fills and for whom. Replacement solutions must demonstrably fill the
+same need in the same context, or the affected population must be
+provided with an alternative path to filling that need. This
+principle, drawn from ecological thinking, prevents the governance
+equivalent of removing a species from an ecosystem without
+understanding its role.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part III:
+Matched Voting Methods</H1>
+<H2 CLASS="western">Article 4: The Right Sensor for the Right Signal</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">From
+control theory: every sensor has a domain where its signal-to-noise
+ratio is highest. A thermocouple is excellent for temperature and
+useless for pressure. A PID controller tuned for a slow thermal
+system will destroy a fast servo motor. </FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Similarly,
+every voting method extracts a different type of information, and
+each is optimal for different governance dynamics.</B></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+This article replaces the idea of a &ldquo;best&rdquo; voting system
+with a toolkit of matched methods.</FONT></FONT></P>
+<H3 CLASS="western">The Voting Method Toolkit</H3>
+<TABLE WIDTH=624 BORDER=1 BORDERCOLOR="#bbbbbb" CELLPADDING=7 CELLSPACING=0>
+	<COL WIDTH=85>
+	<COL WIDTH=99>
+	<COL WIDTH=99>
+	<COL WIDTH=135>
+	<COL WIDTH=134>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85 BGCOLOR="#1b2a4a">
+			<P ALIGN=LEFT><FONT COLOR="#ffffff"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Method</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#1b2a4a">
+			<P ALIGN=LEFT><FONT COLOR="#ffffff"><FONT FACE="Arial, serif"><FONT SIZE=2><B>What
+			It Measures</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#1b2a4a">
+			<P ALIGN=LEFT><FONT COLOR="#ffffff"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Signal
+			Type</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135 BGCOLOR="#1b2a4a">
+			<P ALIGN=LEFT><FONT COLOR="#ffffff"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Optimal
+			Domain</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134 BGCOLOR="#1b2a4a">
+			<P ALIGN=LEFT><FONT COLOR="#ffffff"><FONT FACE="Arial, serif"><FONT SIZE=2><B>Poor
+			Domain</B></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Score
+			Voting (0&ndash;10)</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Preference
+			intensity &mdash; how much do you care about each option</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Continuous
+			gradient (mean)</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">High-stakes
+			elections; policy evaluation; any decision where minority
+			intensity matters; mandate measurement</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Low-information
+			contexts where voters lack basis for assigning meaningful scores</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85>
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Approval
+			Voting</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Acceptability
+			threshold &mdash; where is the line between tolerable and
+			intolerable</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Binary
+			filter</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Coalition-building;
+			veto-screening; &ldquo;which of these can you live with&rdquo;;
+			simple referenda</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Decisions
+			where intensity matters &mdash; cannot distinguish &ldquo;barely
+			acceptable&rdquo; from &ldquo;enthusiastic&rdquo;</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Ranked
+			Choice (IRV)</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Ordinal
+			preference &mdash; relative ordering without intensity</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Rank-order
+			statistic</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Multi-party
+			contexts where compromise ordering matters; local elections with
+			many candidates</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Can
+			eliminate the broadly-preferred candidate early in polarized
+			electorates (violates Condorcet criterion)</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85>
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Sociocratic
+			Consent</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Objection
+			detection &mdash; what would cause harm</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Negative
+			filter (absence of signal)</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Policy
+			refinement; regulatory review; &ldquo;safe enough to try&rdquo;
+			decisions; protecting minority from harm</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Decisions
+			requiring a clear positive mandate &mdash; elections, irreversible
+			choices</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Condorcet
+			Pairwise</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Who
+			would beat every other option head-to-head</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Median
+			detection</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Finding
+			the broadly acceptable middle in polarized populations</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Large
+			candidate fields (computational and comprehension costs); can
+			cycle with no winner</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85>
+			<P ALIGN=LEFT><FONT COLOR="#2a7f8e"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Liquid
+			Delegation</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Trust
+			networks &mdash; who do you trust to decide for you on this topic</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Graph
+			/ network signal</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Ongoing
+			governance where expertise matters and engagement varies; agency
+			scoring at scale</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134>
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">One-time
+			high-stakes decisions where everyone should engage directly</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=85 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#8b4513"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 9pt"><B>Needs-Tagging
+			(Bucket Theory)</B></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">What
+			need is driving the preference &mdash; which bucket is being
+			filled</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=99 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Categorical
+			/ semantic signal</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=135 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Upstream
+			of all other methods &mdash; the sensing layer that makes
+			solution-evaluation meaningful</SPAN></FONT></FONT></FONT></P>
+		</TD>
+		<TD WIDTH=134 BGCOLOR="#f0f4f8">
+			<P ALIGN=LEFT><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Not
+			a voting method itself &mdash; must be combined with a
+			solution-evaluation method downstream</SPAN></FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0.14in"><BR><BR>
+</P>
+<H3 CLASS="western">Matching Methods to Governance Decisions</H3>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.1 &mdash; Elections.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting (0&ndash;10) for all single-winner elections: President,
+Governors, Senators, Representatives, Mayors. This is the domain
+where intensity information matters most, where the spoiler effect is
+most damaging, and where mandate measurement provides continuous
+accountability. Score voting eliminates two-party lock-in and allows
+honest preference expression. The Bucket Theory&rsquo;s Needs Map
+informs voters about what needs each candidate&rsquo;s platform
+addresses and in what contexts.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.2 &mdash; Legislative Process.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Sociocratic consent for legislative refinement. Bills are iterated
+through the consent process: &ldquo;Is this good enough for now, safe
+enough to try?&rdquo; Objections must demonstrate harm to a defined
+governmental purpose. This protects minorities from majoritarian
+overreach&mdash;a critical trust-building feature. Before any bill
+reaches the consent process, a Needs Map must be published showing
+which buckets are at stake and how the bill addresses needs across
+different contexts.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.3 &mdash; Swiss Veto and Citizen Review.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting for citizen challenges to legislation. If 1% of
+registered voters petition within 100 days, the law goes to a
+national score vote (citizens may vote directly or through liquid
+delegates). Average score below 5.0 suspends the law. Needs-tagging
+is built into the petition and scoring process: citizens indicate
+which need is threatened by the law.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.4 &mdash; Ongoing Agency Performance.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting via Liquid Delegation. Citizens score agencies 0&ndash;10
+quarterly, with topic-specific delegation to trusted proxies.
+Delegation is instantly revocable. Scores below 4.0 trigger graduated
+review per Ostrom&rsquo;s graduated sanctions principle.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.5 &mdash; Citizens&rsquo; Assembly Deliberation.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Sociocratic consent process with round format for internal
+deliberation. For recommending among multiple alternatives, Condorcet
+pairwise comparison (which finds the option that would beat every
+other in head-to-head comparison) is used as the selection method.
+This combination uses consent for &ldquo;would this cause harm?&rdquo;
+and Condorcet for &ldquo;which option is most broadly acceptable?&rdquo;</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.6 &mdash; Tension Prioritization.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting for weighting which citizen-registered tensions are most
+urgent. Citizens score tensions 0&ndash;10 for importance. Liquid
+delegation applies. This ensures governance attention flows to the
+needs that matter most, as weighted by continuous citizen feedback.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.7 &mdash; Constitutional Amendment.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting with a high threshold. Amendments require average score
+above 6.5 nationally plus above 5.0 in at least 26 states (adapting
+Switzerland&rsquo;s dual-majority requirement). Needs-tagging is
+mandatory in the amendment process: proponents must identify which
+needs the amendment addresses, and the Citizens&rsquo; Assembly must
+map how it affects different populations&rsquo; bucket-filling
+strategies.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+4.8 &mdash; Regulatory Sunset Review.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Score voting on a 0&ndash;10 scale for effectiveness and necessity.
+Regulations scoring below 5.0 cannot be renewed without supermajority
+legislative vote plus Citizens&rsquo; Assembly endorsement. Before
+sunset review, the Needs Map must show what need the regulation fills
+and what alternative bucket-filling strategies exist if the
+regulation lapses. The Niche Principle (Section 3.4) applies: before
+eliminating a regulation, the system must understand what it fills
+and for whom.</FONT></FONT></P>
+<TABLE WIDTH=624 BORDER=1 BORDERCOLOR="#4a6741" CELLPADDING=7 CELLSPACING=0>
+	<COL WIDTH=608>
+	<TR>
+		<TD WIDTH=608 VALIGN=TOP BGCOLOR="#f0f4f8">
+			<P STYLE="margin-bottom: 0.06in"><FONT COLOR="#4a6741"><FONT FACE="Arial, serif"><FONT SIZE=3><B>The
+			Control Theory Principle</B></FONT></FONT></FONT></P>
+			<P><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt">No
+			single controller is optimal for all plant dynamics. A PID tuned
+			for a slow thermal mass will ring and overshoot on a fast servo
+			motor. Similarly, no single voting method is optimal for all
+			governance decisions. Score voting excels where intensity
+			information matters. Consent excels where harm-prevention matters.
+			Condorcet excels where broad acceptability matters in polarized
+			contexts. Liquid delegation excels where ongoing expertise-driven
+			evaluation matters. The governance system&rsquo;s job is to match
+			the sensor to the signal&mdash;not to declare one sensor
+			universally superior. And upstream of all sensors, the Bucket
+			Theory provides the reference signal: what need is the system
+			actually trying to address?</FONT></FONT></FONT></P>
+		</TD>
+	</TR>
+</TABLE>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part IV:
+Distributed Governance (The Polycentric Layer)</H1>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
+section synthesizes Holacracy&rsquo;s nested circles, Sociocracy&rsquo;s
+double-linking, and Ostrom&rsquo;s polycentric governance into a
+distributed architecture that is simultaneously decentralized and
+coherent&mdash;and informed by the Needs Map.</SPAN></SPAN></FONT></FONT></FONT></P>
+<H2 CLASS="western">Article 5: Circles, Polycentricity, and
+Subsidiarity</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+5.1 &mdash; The Subsidiarity Mandate.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Authority defaults to the most local level of government capable of
+handling the issue. This is supported by Ostrom&rsquo;s empirical
+finding that polycentric systems outperform centralized ones, and by
+the Bucket Theory: the same need is filled differently in different
+contexts, so solutions should be generated at the level closest to
+the context. A federal one-size-fits-all policy will inevitably
+misfit many local contexts.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+5.2 &mdash; Sociocratic Double-Linking.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Each governance level has two structural connections to the level
+above. A Lead Link (appointed by the higher circle to carry broader
+priorities downward) and a Rep Link (elected by the lower circle to
+carry local knowledge and concerns upward). Both participate fully in
+decision-making at both levels. This prevents the information
+asymmetry that erodes trust and ensures that local needs-sensing
+information flows upward into broader policy decisions.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+5.3 &mdash; Domain Clarity.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Every government entity publishes its domains&mdash;what it
+exclusively controls&mdash;on the Trust Dashboard. Overlapping
+domains are flagged and resolved through governance process. This
+satisfies Ostrom&rsquo;s first design principle and Holacracy&rsquo;s
+core structural rule.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+5.4 &mdash; Polycentric Experimentation.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+States and local circles are explicitly empowered to experiment with
+different solutions to the same need. The Needs Map tracks which
+approaches work in which contexts. Successful innovations spread
+through voluntary adoption, not top-down mandate. Failed experiments
+are valuable data&mdash;they reveal which solutions do not work in
+which contexts, further refining the system&rsquo;s understanding of
+how different populations fill different buckets.</FONT></FONT></P>
+<H2 CLASS="western">Article 6: The Governance Process</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+6.1 &mdash; Tension-Driven Legislation.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Any citizen can register a tension through the digital Trust
+Infrastructure. Tensions include a needs-tag indicating which
+bucket(s) are implicated. Tensions that gather sufficient
+score-weight are processed through a defined legislative track.
+Citizens may delegate their tension-scoring through the Liquid
+Delegation Layer.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+6.2 &mdash; The Swiss Veto.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Any law passed by Congress can be challenged by citizens. 1% of
+registered voters signing a petition within 100 days triggers a
+national score vote, exercisable directly or through liquid
+delegates. Average score below 5.0 suspends the law and refers it to
+Citizens&rsquo; Assembly review.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part V:
+Deliberative and Digital Infrastructure</H1>
+<H2 CLASS="western">Article 7: Citizens&rsquo; Assemblies</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+7.1 &mdash; Standing Citizens&rsquo; Assembly.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+150 randomly-selected citizens serving staggered 18-month terms. This
+body conducts needs-mapping for complex policy areas, deliberates on
+constitutional amendments, reviews agencies triggered by low scores,
+and processes major tensions. The Assembly satisfies Ostrom&rsquo;s
+third design principle: those affected by governance rules can
+participate in modifying them.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+7.2 &mdash; Deliberative Process.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Following Ireland&rsquo;s proven methodology enhanced with
+Sociocratic round format and the Bucket Theory: before deliberating
+solutions, the Assembly first maps the needs at stake and how
+different populations fill them. Expert testimony is organized around
+needs, not around solutions. Decisions use the consent process for
+harm-prevention and Condorcet pairwise comparison for selecting among
+alternatives.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+7.3 &mdash; Binding Recommendations.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Constitutional amendment recommendations proceed directly to national
+score vote. Agency reform recommendations must be implemented within
+12 months. Regulatory sunset reviews are binding. Congress may
+override with two-thirds supermajority plus public justification.</FONT></FONT></P>
+<H2 CLASS="western">Article 8: Digital Democratic Infrastructure</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+8.1 &mdash; The National Trust Layer.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Decentralized, blockchain-anchored data exchange connecting all
+government agencies (adapted from Estonia&rsquo;s X-Road). Every data
+query is logged. Citizens can audit access in real time. This
+infrastructure supports the Trust Dashboard, Needs Map, Liquid
+Delegation, score voting, and tension registration.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+8.2 &mdash; Secure Digital Identity and Delegation.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Universal digital identity system enabling participation in all
+democratic processes. The Liquid Delegation Layer operates through
+this system&mdash;citizens set and revoke delegation preferences,
+view delegation chains, and override proxy scores. Physical
+alternatives must always exist.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+8.3 &mdash; Open-Source Governance Code.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+All software used in democratic processes must be open-source and
+publicly auditable. No proprietary black boxes in democracy. If you
+cannot inspect it, you cannot trust it.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Part VI: Trust
+Accountability and Constitutional Evolution</H1>
+<H2 CLASS="western">Article 9: Anti-Corruption Architecture</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+9.1 &mdash; Separation of Money and Governance.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+All campaigns publicly funded. Private contributions prohibited.
+Lobbying contacts logged in real time with full transcripts on the
+Trust Dashboard.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+9.2 &mdash; Independent Integrity Commission.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Members selected by Citizens&rsquo; Assembly lottery.
+Constitutionally protected funding. Authority to investigate any
+government entity.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+9.3 &mdash; Merit-Based Civil Service Protection.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Hired and promoted on merit, never political loyalty. Civil servants
+swear to uphold the Constitution, not loyalty to any individual.</FONT></FONT></P>
+<H2 CLASS="western">Article 10: Constitutional Evolution</H2>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+10.1 &mdash; The Adaptive Amendment Process.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Three initiation paths: (1) congressional; (2) Citizens&rsquo;
+Assembly recommendation to national score vote; (3) citizen
+initiative with 3% score-weighted support. All paths require a
+published Needs Map showing which buckets the amendment addresses.
+Amendments require average score above 6.5 nationally plus above 5.0
+in 26+ states.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+10.2 &mdash; Immutable Core.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Beyond amendment: the Bill of Rights, separation of powers, universal
+suffrage, the Needs-Sensing Layer, the matched voting toolkit, the
+Citizens&rsquo; Assembly, the Liquid Delegation Layer, and Ostrom&rsquo;s
+Eight Design Principles.</FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><B>Section
+10.3 &mdash; Decennial Constitutional Review.</B></FONT></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">
+Every ten years, a 300-member Citizens&rsquo; Assembly conducts
+comprehensive review. Which modules work? Which need updates? Has the
+needs taxonomy evolved? Do new governance dynamics require new voting
+methods in the toolkit? This institutionalizes Sociocracy&rsquo;s
+principle that no decision is permanent.</FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<H1 CLASS="western" STYLE="page-break-before: always">Conclusion:
+Sensing Before Solving</H1>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">The
+deepest failure of American governance is not that it uses the wrong
+voting method, or that it lacks transparency, or that it is too
+centralized. The deepest failure is that it asks citizens to fight
+about solutions without ever surfacing the needs those solutions are
+trying to fill.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">A
+farmer and a nutritionist, forced to vote for or against agricultural
+subsidies, become political enemies. A system that first asks &ldquo;What
+are you both trying to achieve?&rdquo; discovers they share the same
+goal&mdash;food security&mdash;and differ only in context. The farmer
+fills the sustenance bucket with land. The nutritionist fills it with
+information. Both are right, for their terrain.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">The
+Bucket Theory is not a utopian claim that all conflict can be
+dissolved. Some needs genuinely conflict&mdash;one group&rsquo;s
+agency may threaten another group&rsquo;s security. But even genuine
+conflicts become more tractable when the governance system correctly
+identifies what is actually at stake, rather than allowing the fight
+to escalate at the solution level where positions harden and
+compromise feels like betrayal.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">This
+Adaptive Constitution therefore proposes three layers, not one: sense
+the need, generate context-appropriate solutions, then evaluate those
+solutions with the right tool. Upstream, the Bucket Theory and Needs
+Map identify what buckets are at stake and how different populations
+fill them. Midstream, Ostrom&rsquo;s polycentric governance generates
+solutions matched to local contexts rather than imposing
+one-size-fits-all policy. Downstream, matched voting methods&mdash;each
+chosen for its signal-extraction properties in the specific
+governance dynamic at hand&mdash;evaluate those solutions with
+appropriate precision.</SPAN></SPAN></FONT></FONT></FONT></P>
+<P ALIGN=LEFT STYLE="margin-bottom: 0.14in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN STYLE="font-style: normal"><SPAN STYLE="font-weight: normal">No
+other governance framework we are aware of builds this upstream
+needs-sensing layer. That is what makes this proposal fundamentally
+different from electoral reform alone. Electoral reform asks: &ldquo;How
+do we better count preferences?&rdquo; The Bucket Theory asks the
+prior question: &ldquo;What are those preferences actually about?&rdquo;</SPAN></SPAN></FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0.06in"><FONT COLOR="#1b2a4a"><FONT FACE="Arial, serif"><FONT SIZE=3><B>A
+System That Learns What People Need, Not Just What They Want</B></FONT></FONT></FONT></P>
+<P STYLE="margin-bottom: 0in"><FONT COLOR="#1b1b1b"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt">A
+neural network does not just optimize for the output signal. It
+learns the features of the input&mdash;the hidden structure that
+explains why the signal looks the way it does. The Bucket Theory is
+the governance equivalent of feature extraction. Before the system
+optimizes (votes on solutions), it must learn the features (identify
+the needs). Without this, governance is a model trained on noise: it
+fits the surface of political opinion without understanding the
+structure underneath. With it, governance becomes a system that
+learns what people need&mdash;not just what they say they want&mdash;and
+can generate solutions matched to the actual terrain of their lives.</FONT></FONT></FONT></P>
+</BODY>
+</HTML>
