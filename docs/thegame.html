@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Game</title>
+    <style>
+        :root {
+            --bg-color: #2d5e2e;
+            --card-radius: 8px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-style: italic;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .controls { display: flex; gap: 10px; align-items: center; }
+
+        button {
+            padding: 8px 16px;
+            background: #4a7c43;
+            border: 1px solid #6fa363;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        button:hover:not(:disabled) { background: #5a9463; }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Piles */
+        #piles-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .piles-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .piles-header span {
+            width: 200px;
+            text-align: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.75;
+        }
+
+        #piles {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pile-group { display: flex; gap: 15px; }
+
+        .pile-divider {
+            width: 2px;
+            height: 140px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 10px;
+        }
+
+        .pile {
+            width: 95px;
+            height: 140px;
+            background: white;
+            border-radius: var(--card-radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.12s, box-shadow 0.15s;
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.35);
+            color: #333;
+            padding: 10px 4px;
+        }
+
+        .pile.up   { border-color: #3b6bb3; }
+        .pile.down { border-color: #b33b3b; }
+
+        .pile.valid-target {
+            box-shadow: 0 0 0 3px #00e676, 2px 3px 10px rgba(0,0,0,0.4);
+            border-color: #00e676;
+            transform: scale(1.06);
+        }
+
+        .pile.reverse-target {
+            box-shadow: 0 0 0 3px #ff9800, 2px 3px 10px rgba(0,0,0,0.4);
+            border-color: #ff9800;
+            transform: scale(1.06);
+        }
+
+        .pile-arrow { font-size: 1.5rem; }
+        .pile.up   .pile-arrow { color: #3b6bb3; }
+        .pile.down .pile-arrow { color: #b33b3b; }
+
+        .pile-value {
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #111;
+            line-height: 1;
+        }
+
+        .pile-hint {
+            font-size: 0.62rem;
+            color: #aaa;
+        }
+
+        /* Hand */
+        #hand-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 25px;
+        }
+
+        #hand-label {
+            text-align: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.75;
+            margin-bottom: 12px;
+        }
+
+        #hand {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 110px;
+        }
+
+        .hand-card {
+            width: 72px;
+            height: 104px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 1px 2px 5px rgba(0,0,0,0.3);
+            color: #222;
+        }
+
+        .hand-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 2px 8px 12px rgba(0,0,0,0.4);
+        }
+
+        .hand-card.selected {
+            box-shadow: 0 0 0 3px #ffff00, 1px 4px 10px rgba(0,0,0,0.5);
+            transform: translateY(-14px);
+            background: #fffde7;
+        }
+
+        .hand-card.no-moves { opacity: 0.38; }
+
+        /* Status bar */
+        #status-bar {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+
+        .stat {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .rules-hint {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 18px;
+            font-size: 0.78rem;
+            opacity: 0.55;
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        /* Error toast */
+        #error-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: #ff6b6b;
+            font-weight: bold;
+            padding: 10px 22px;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 3000;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.82);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2000;
+            gap: 16px;
+        }
+
+        .modal h2 { font-size: 3rem; margin: 0; }
+        .modal p  { font-size: 1.05rem; opacity: 0.8; margin: 0; }
+        .modal .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+
+        #win-modal  h2 { color: gold; }
+        #lose-modal h2 { color: #ff6b6b; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>The Game</h1>
+    <div class="controls">
+        <button onclick="game.undo()">Undo</button>
+        <button onclick="game.restart()">New Game</button>
+    </div>
+</header>
+
+<div id="piles-section">
+    <div class="piles-header">
+        <span>↑ Ascending Piles</span>
+        <span>↓ Descending Piles</span>
+    </div>
+    <div id="piles"></div>
+</div>
+
+<div id="hand-section">
+    <div id="hand-label">Your Hand</div>
+    <div id="hand"></div>
+</div>
+
+<div id="status-bar">
+    <div id="status-text"></div>
+    <button id="draw-btn" onclick="game.endTurn()">Draw Cards</button>
+</div>
+
+<div class="rules-hint">
+    Select a card, then click a pile to play it. &nbsp;|&nbsp;
+    ↑ piles: must play <strong>higher</strong> &nbsp;|&nbsp;
+    ↓ piles: must play <strong>lower</strong> &nbsp;|&nbsp;
+    <strong>Exception:</strong> a card exactly <strong>10 away in reverse</strong> is always legal &nbsp;|&nbsp;
+    Play at least <strong>2 cards</strong> before drawing (1 when deck is empty)
+</div>
+
+<div id="error-msg"></div>
+
+<div id="win-modal" class="modal">
+    <h2>YOU WIN!</h2>
+    <p>Every card has been played!</p>
+    <button onclick="game.restart()">Play Again</button>
+</div>
+
+<div id="lose-modal" class="modal">
+    <h2>GAME OVER</h2>
+    <p id="lose-msg">No valid moves remaining.</p>
+    <div class="btn-row">
+        <button id="lose-undo-btn" onclick="game.undo()">Undo</button>
+        <button onclick="game.restart()">New Game</button>
+    </div>
+</div>
+
+<script>
+class TheGame {
+    constructor() {
+        this.piles = [1, 1, 100, 100];
+        this.pileTypes = ['up', 'up', 'down', 'down'];
+        this.deck = [];
+        this.hand = [];
+        this.cardsPlayedThisTurn = 0;
+        this.selectedCardIndex = null;
+        this.history = [];
+        this.gameOver = false;
+
+        this.restart();
+    }
+
+    restart() {
+        this.deck = [];
+        for (let i = 2; i <= 99; i++) this.deck.push(i);
+        this.shuffle(this.deck);
+
+        this.piles = [1, 1, 100, 100];
+        this.hand = [];
+        this.cardsPlayedThisTurn = 0;
+        this.selectedCardIndex = null;
+        this.history = [];
+        this.gameOver = false;
+
+        for (let i = 0; i < 8; i++) this.hand.push(this.deck.pop());
+
+        document.getElementById('win-modal').style.display = 'none';
+        document.getElementById('lose-modal').style.display = 'none';
+        this.render();
+    }
+
+    shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    canPlay(card, pileIndex) {
+        const top = this.piles[pileIndex];
+        if (this.pileTypes[pileIndex] === 'up') {
+            return card > top || card === top - 10;
+        } else {
+            return card < top || card === top + 10;
+        }
+    }
+
+    isReverse(card, pileIndex) {
+        const top = this.piles[pileIndex];
+        return this.pileTypes[pileIndex] === 'up'
+            ? card === top - 10
+            : card === top + 10;
+    }
+
+    saveState() {
+        this.history.push({
+            piles: [...this.piles],
+            hand: [...this.hand],
+            deck: [...this.deck],
+            cardsPlayedThisTurn: this.cardsPlayedThisTurn
+        });
+        if (this.history.length > 50) this.history.shift();
+    }
+
+    undo() {
+        if (this.history.length === 0) return;
+        const s = this.history.pop();
+        this.piles = s.piles;
+        this.hand = s.hand;
+        this.deck = s.deck;
+        this.cardsPlayedThisTurn = s.cardsPlayedThisTurn;
+        this.selectedCardIndex = null;
+        this.gameOver = false;
+        document.getElementById('lose-modal').style.display = 'none';
+        this.render();
+    }
+
+    selectCard(index) {
+        this.selectedCardIndex = (this.selectedCardIndex === index) ? null : index;
+        this.render();
+    }
+
+    playCard(pileIndex) {
+        if (this.selectedCardIndex === null || this.gameOver) return;
+        const card = this.hand[this.selectedCardIndex];
+        if (!this.canPlay(card, pileIndex)) return;
+
+        this.saveState();
+        this.piles[pileIndex] = card;
+        this.hand.splice(this.selectedCardIndex, 1);
+        this.selectedCardIndex = null;
+        this.cardsPlayedThisTurn++;
+
+        this.render();
+        this.checkGameState();
+    }
+
+    endTurn() {
+        if (this.gameOver) return;
+        const minPlays = this.deck.length > 0 ? 2 : 1;
+        if (this.cardsPlayedThisTurn < minPlays) {
+            this.showError(`Play at least ${minPlays} card${minPlays > 1 ? 's' : ''} first!`);
+            return;
+        }
+
+        while (this.hand.length < 8 && this.deck.length > 0) {
+            this.hand.push(this.deck.pop());
+        }
+        this.cardsPlayedThisTurn = 0;
+        this.selectedCardIndex = null;
+
+        this.render();
+        this.checkGameState();
+    }
+
+    checkGameState() {
+        // Win: deck and hand both empty
+        if (this.deck.length === 0 && this.hand.length === 0) {
+            document.getElementById('win-modal').style.display = 'flex';
+            return;
+        }
+
+        // Loss: can't make minimum required plays
+        const minPlays = this.deck.length > 0 ? 2 : 1;
+        if (this.cardsPlayedThisTurn < minPlays && this.hand.length > 0) {
+            const stuck = !this.hand.some(card =>
+                [0, 1, 2, 3].some(pi => this.canPlay(card, pi))
+            );
+            if (stuck) {
+                this.gameOver = true;
+                const needed = minPlays - this.cardsPlayedThisTurn;
+                document.getElementById('lose-msg').textContent =
+                    `No valid moves — needed to play ${needed} more card${needed > 1 ? 's' : ''} this turn.`;
+                document.getElementById('lose-undo-btn').style.display =
+                    this.history.length > 0 ? 'inline-block' : 'none';
+                document.getElementById('lose-modal').style.display = 'flex';
+            }
+        }
+    }
+
+    showError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.style.opacity = '1';
+        clearTimeout(this._errTimer);
+        this._errTimer = setTimeout(() => { el.style.opacity = '0'; }, 2200);
+    }
+
+    render() {
+        // --- Piles ---
+        const pilesEl = document.getElementById('piles');
+        pilesEl.innerHTML = '';
+
+        const upGroup   = document.createElement('div');
+        upGroup.className = 'pile-group';
+        const divider   = document.createElement('div');
+        divider.className = 'pile-divider';
+        const downGroup = document.createElement('div');
+        downGroup.className = 'pile-group';
+
+        this.piles.forEach((top, pi) => {
+            const type   = this.pileTypes[pi];
+            const pileEl = document.createElement('div');
+            pileEl.className = `pile ${type}`;
+
+            if (this.selectedCardIndex !== null) {
+                const cv = this.hand[this.selectedCardIndex];
+                if (this.canPlay(cv, pi)) {
+                    pileEl.classList.add(this.isReverse(cv, pi) ? 'reverse-target' : 'valid-target');
+                }
+            }
+
+            pileEl.onclick = () => this.playCard(pi);
+            pileEl.innerHTML = `
+                <div class="pile-arrow">${type === 'up' ? '↑' : '↓'}</div>
+                <div class="pile-value">${top}</div>
+                <div class="pile-hint">${type === 'up' ? 'started at 1' : 'started at 100'}</div>
+            `;
+
+            (pi < 2 ? upGroup : downGroup).appendChild(pileEl);
+        });
+
+        pilesEl.appendChild(upGroup);
+        pilesEl.appendChild(divider);
+        pilesEl.appendChild(downGroup);
+
+        // --- Hand ---
+        const handEl = document.getElementById('hand');
+        handEl.innerHTML = '';
+        this.hand.forEach((cv, i) => {
+            const cardEl = document.createElement('div');
+            cardEl.className = 'hand-card';
+            if (i === this.selectedCardIndex) cardEl.classList.add('selected');
+            if (![0, 1, 2, 3].some(pi => this.canPlay(cv, pi))) cardEl.classList.add('no-moves');
+            cardEl.textContent = cv;
+            cardEl.onclick = () => this.selectCard(i);
+            handEl.appendChild(cardEl);
+        });
+
+        // --- Status ---
+        const minPlays = this.deck.length > 0 ? 2 : 1;
+        document.getElementById('status-text').innerHTML = `
+            <span class="stat">Deck: ${this.deck.length}</span>
+            <span class="stat">Hand: ${this.hand.length}</span>
+            <span class="stat">Played this turn: ${this.cardsPlayedThisTurn} / ${minPlays} min</span>
+        `;
+
+        const btn = document.getElementById('draw-btn');
+        btn.disabled = this.cardsPlayedThisTurn < minPlays;
+        btn.textContent = this.deck.length > 0 ? 'Draw Cards' : 'End Turn';
+    }
+}
+
+const game = new TheGame();
+</script>
+</body>
+</html>
