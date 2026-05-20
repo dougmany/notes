@@ -90,11 +90,25 @@
             align-items: center;
         }
 
-        .pile-group { display: flex; gap: 15px; }
+        .pile-group { display: flex; gap: 15px; padding-bottom: 28px; }
+
+        .pile-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pile-count {
+            position: absolute;
+            bottom: -22px;
+            color: white;
+            font-size: 14px;
+        }
 
         .pile-divider {
             width: 2px;
-            height: 140px;
+            height: 168px;
             background: rgba(255,255,255,0.2);
             margin: 0 10px;
         }
@@ -275,6 +289,7 @@
 <header>
     <h1>The Game</h1>
     <div class="controls">
+        <button onclick="game.sortHand()">Sort Hand</button>
         <button onclick="game.undo()">Undo</button>
         <button onclick="game.restart()">New Game</button>
     </div>
@@ -327,6 +342,7 @@
 class TheGame {
     constructor() {
         this.piles = [1, 1, 100, 100];
+        this.pileCounts = [0, 0, 0, 0];
         this.pileTypes = ['up', 'up', 'down', 'down'];
         this.deck = [];
         this.hand = [];
@@ -344,6 +360,7 @@ class TheGame {
         this.shuffle(this.deck);
 
         this.piles = [1, 1, 100, 100];
+        this.pileCounts = [0, 0, 0, 0];
         this.hand = [];
         this.cardsPlayedThisTurn = 0;
         this.selectedCardIndex = null;
@@ -383,6 +400,7 @@ class TheGame {
     saveState() {
         this.history.push({
             piles: [...this.piles],
+            pileCounts: [...this.pileCounts],
             hand: [...this.hand],
             deck: [...this.deck],
             cardsPlayedThisTurn: this.cardsPlayedThisTurn
@@ -394,6 +412,7 @@ class TheGame {
         if (this.history.length === 0) return;
         const s = this.history.pop();
         this.piles = s.piles;
+        this.pileCounts = s.pileCounts;
         this.hand = s.hand;
         this.deck = s.deck;
         this.cardsPlayedThisTurn = s.cardsPlayedThisTurn;
@@ -404,7 +423,22 @@ class TheGame {
     }
 
     selectCard(index) {
-        this.selectedCardIndex = (this.selectedCardIndex === index) ? null : index;
+        if (this.selectedCardIndex === null) {
+            this.selectedCardIndex = index;
+        } else if (this.selectedCardIndex === index) {
+            this.selectedCardIndex = null;
+        } else {
+            // Swap the two cards in hand
+            [this.hand[this.selectedCardIndex], this.hand[index]] =
+                [this.hand[index], this.hand[this.selectedCardIndex]];
+            this.selectedCardIndex = null;
+        }
+        this.render();
+    }
+
+    sortHand() {
+        this.hand.sort((a, b) => a - b);
+        this.selectedCardIndex = null;
         this.render();
     }
 
@@ -415,6 +449,7 @@ class TheGame {
 
         this.saveState();
         this.piles[pileIndex] = card;
+        this.pileCounts[pileIndex]++;
         this.hand.splice(this.selectedCardIndex, 1);
         this.selectedCardIndex = null;
         this.cardsPlayedThisTurn++;
@@ -487,7 +522,10 @@ class TheGame {
         downGroup.className = 'pile-group';
 
         this.piles.forEach((top, pi) => {
-            const type   = this.pileTypes[pi];
+            const type    = this.pileTypes[pi];
+            const wrapper = document.createElement('div');
+            wrapper.className = 'pile-wrapper';
+
             const pileEl = document.createElement('div');
             pileEl.className = `pile ${type}`;
 
@@ -505,7 +543,13 @@ class TheGame {
                 <div class="pile-hint">${type === 'up' ? 'started at 1' : 'started at 100'}</div>
             `;
 
-            (pi < 2 ? upGroup : downGroup).appendChild(pileEl);
+            const countEl = document.createElement('div');
+            countEl.className = 'pile-count';
+            countEl.textContent = this.pileCounts[pi];
+
+            wrapper.appendChild(pileEl);
+            wrapper.appendChild(countEl);
+            (pi < 2 ? upGroup : downGroup).appendChild(wrapper);
         });
 
         pilesEl.appendChild(upGroup);
