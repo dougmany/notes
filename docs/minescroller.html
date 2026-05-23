@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mine Scroller</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    #cv { image-rendering: auto; cursor: default; }
+  </style>
+</head>
+<body>
+<canvas id="cv" width="300" height="400"></canvas>
+<script>
+// ── Layout constants ──────────────────────────────────────────────────────────
+const CANVAS_W   = 300;
+const CANVAS_H   = 400;
+const CELL       = 20;
+const COLS       = 9;
+const GRID_X     = 60;
+const HEADER_H   = 40;
+const SIDEBAR_CX = 270;
+const ROW_BASE   = 340;
+const VIS_MIN    = 20;
+const VIS_MAX    = 380;
+
+const MODE_NAMES   = ['Easy Mode', 'Normal Mode', 'Hard Mode', 'High-speed Mode'];
+const MODE_COLORS  = ['#88ff44', '#ffff44', '#ff8844', '#44ccff'];
+const MODE_SHORT   = ['EASY', 'NORMAL', 'HARD', 'HIGH-SPEED'];
+const FLOOR_COUNTS = [100, 200, 150, 400];
+const MINES_PER_CHUNK = [2, 4, 7, 2];  // mines placed per chunk per mode
+const CHUNK_SIZE  = [2, 2, 2, 3];      // rows per chunk per mode
+
+// Number colours (1-8) on dark background
+const NUM_CLR = ['', '#80ffff', '#00ff44', '#ff4444', '#4466ff', '#ff8844', '#44ccff', '#ccff44', '#ffffff'];
+
+// ── Canvas ────────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('cv');
+const ctx    = canvas.getContext('2d');
+const DPR    = window.devicePixelRatio || 1;
+const SCALE  = 2;  // CSS display multiplier
+canvas.width  = CANVAS_W * SCALE * DPR;
+canvas.height = CANVAS_H * SCALE * DPR;
+canvas.style.width  = (CANVAS_W * SCALE) + 'px';
+canvas.style.height = (CANVAS_H * SCALE) + 'px';
+ctx.scale(SCALE * DPR, SCALE * DPR);
+
+// ── Colours ───────────────────────────────────────────────────────────────────
+const CLR = {
+  bg          : '#1a1b2e',
+  header      : '#000000',
+  bottomBar   : '#101820',
+  cellHidden  : '#2e3244',
+  cellTop     : '#44475a',
+  cellBorder  : '#4a4e6a',
+  cellRevealed: '#1c4d5c',
+  cellMineBg  : '#5c1c1c',
+  floorSafe   : '#446644',
+  floorWarn   : '#888800',
+  floorDanger : '#cc2222',
+  white       : '#ffffff',
+  yellow      : '#ffff44',
+  green       : '#44ff88',
+  cyan        : '#00c0ff',
+  orange      : '#ff8840',
+  logoFill    : '#ffff00',
+  logoText    : '#000000',
+  itemBox     : '#2a5c28',
+  labelDim    : '#888888',
+  overlay     : 'rgba(0,0,0,0.55)',
+  resultBg    : 'rgba(20,30,50,0.92)',
+};
+
+// ── Game state ────────────────────────────────────────────────────────────────
+let p  = 1;   // state: 1=title 3=generating 4=play 5=game-over 6=game-clear
+let n  = 0;   // mode index
+let q  = 0;   // result-screen animation counter
+let A  = 1;   // current floor (1-indexed)
+let C  = 0;   // frame counter
+let D  = 0;   // miss counter
+let ea = 0;   // displayed mine count
+let E  = 1;   // scroll speed
+let F  = 0;   // paused (0/1)
+let la = 0;   // ?MARK toggle (0=ON)
+let H  = 749; // WATCH counter
+let J  = 149; // SCOPE counter
+let ja = 0;   // BOMB state
+let generating = false; // true while board generation runs in setTimeout
+let da = 0;   // scroll accumulator
+let ga = 0;   // mine-hit burst counter
+let skipKey  = false; // arrow-down / S key held
+let skipHeld = false; // computed each frame (key OR button)
+
+// Board data (allocated on game start)
+let cellVal   = [];   // [row][col] → 0-8 neighbor count, 9 = mine
+let cellState = [];   // [row][col] → 0=hidden 1=revealed 2=flag 3=?
+let maxFloors = 0;
+let fa        = 0;    // total mine count
+
+// ── Input ─────────────────────────────────────────────────────────────────────
+let mx = -1, my = -1;
+let clicked = false;
+let rightClicked = false;
+let mouseHeld = false;
+
+function toCanvas(e) {
+  const r = canvas.getBoundingClientRect();
+  mx = (e.clientX - r.left) * (CANVAS_W / r.width);
+  my = (e.clientY - r.top)  * (CANVAS_H / r.height);
+}
+canvas.addEventListener('mousemove',  e => toCanvas(e));
+canvas.addEventListener('mousedown',  e => {
+  toCanvas(e);
+  if (e.button === 0) { clicked = true; mouseHeld = true; }
+  if (e.button === 2) rightClicked = true;
+});
+canvas.addEventListener('mouseup', e => { if (e.button === 0) mouseHeld = false; });
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowDown') skipKey = true;
+  if (e.code === 'KeyP' && p === 4) F = F ? 0 : 1;
+  if (e.code === 'Space') { e.preventDefault(); rightClicked = true; }
+});
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowDown') skipKey = false;
+});
+
+function hit(cx, cy, w, h) {
+  return mx >= cx - w/2 && mx < cx + w/2 && my >= cy - h/2 && my < cy + h/2;
+}
+
+// ── Draw helpers ──────────────────────────────────────────────────────────────
+function fillRect(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); }
+function strokeRect(x, y, w, h, c, lw = 1) {
+  ctx.strokeStyle = c; ctx.lineWidth = lw;
+  ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+}
+function label(s, x, y, c, sz = 6, al = 'center', bl = 'middle') {
+  ctx.font = `${sz}px "Courier New", monospace`;
+  ctx.textAlign = al; ctx.textBaseline = bl;
+  ctx.fillStyle = c; ctx.fillText(s, x, y);
+}
+function sideBtn(cx, cy, w, h, txt, face, tc) {
+  fillRect(cx-w/2, cy-h/2, w, h, face);
+  strokeRect(cx-w/2, cy-h/2, w, h, CLR.white);
+  label(txt, cx, cy, tc, 7);
+}
+
+// ── Cell drawing ──────────────────────────────────────────────────────────────
+function drawCell(cellX, cellY, state, val) {
+  if (state === 1) {
+    // Revealed
+    if (val === 9) {
+      fillRect(cellX+1, cellY+1, 18, 18, CLR.cellMineBg);
+      label('✸', cellX+10, cellY+11, '#ff4040', 11);
+    } else {
+      fillRect(cellX+1, cellY+1, 18, 18, CLR.cellRevealed);
+      if (val > 0) label(String(val), cellX+10, cellY+11, NUM_CLR[val], 9);
+    }
+  } else {
+    // SCOPE: reveal hidden/? mines with green tint; wrong flags with orange tint
+    const scopeActive = J > 0 && J < 149;
+    const scopeShow = scopeActive && val === 9 && (state === 0 || state === 3);
+    const wrongFlag = scopeActive && state === 2 && val !== 9;
+    if (scopeShow) {
+      fillRect(cellX+1, cellY+1, 18, 18, '#0d2e10');
+      fillRect(cellX+1, cellY+1, 18,  1, '#1a4a1a');
+      fillRect(cellX+1, cellY+1,  1, 18, '#1a4a1a');
+      ctx.strokeStyle = '#44ff44'; ctx.lineWidth = 1;
+      ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
+      label('✸', cellX+10, cellY+11, '#44ff88', 11);
+    } else if (wrongFlag) {
+      fillRect(cellX+1, cellY+1, 18, 18, '#2e1a00');
+      fillRect(cellX+1, cellY+1, 18,  1, '#4a2e00');
+      fillRect(cellX+1, cellY+1,  1, 18, '#4a2e00');
+      ctx.strokeStyle = '#ff8800'; ctx.lineWidth = 1;
+      ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
+      label('⚑', cellX+10, cellY+11, '#ff8800', 9);
+    } else {
+      // Hidden, flag, or ?
+      fillRect(cellX+1, cellY+1, 18, 18, CLR.cellHidden);
+      fillRect(cellX+1, cellY+1, 18,  1, CLR.cellTop);
+      fillRect(cellX+1, cellY+1,  1, 18, CLR.cellTop);
+      ctx.strokeStyle = CLR.cellBorder; ctx.lineWidth = 1;
+      ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
+      if (state === 2) label('⚑', cellX+10, cellY+11, '#ff4040', 9);
+      if (state === 3) label('?', cellX+10, cellY+11, CLR.yellow,  9);
+    }
+  }
+}
+
+// ── Board generation (Stages 3 & 4) ──────────────────────────────────────────
+
+// Iterative flood-fill reveal — avoids stack overflow on large boards
+function revealCell(col, row) {
+  const stack = [[col, row]];
+  while (stack.length) {
+    const [c, r] = stack.pop();
+    if (r < 0 || r >= maxFloors || c < 0 || c >= COLS) continue;
+    if (cellState[r][c] === 1) continue;
+    cellState[r][c] = 1;
+    if (cellVal[r][c] === 9) { D++; continue; } // direct mine hit — no expansion
+    if (cellVal[r][c] === 0) {
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++) {
+          if (!dr && !dc) continue;
+          const nr = r+dr, nc = c+dc;
+          if (nr >= 0 && nr < maxFloors && nc >= 0 && nc < COLS
+              && cellState[nr][nc] !== 1   // not already revealed
+              && cellState[nr][nc] !== 2   // not flagged
+              && cellVal[nr][nc]  !== 9)   // not a mine
+            stack.push([nc, nr]);
+        }
+    }
+  }
+}
+
+// Mine generation for a row range, followed by state reset + row reveal for solver
+function generateMines(startRow, endRow) {
+  // 1. Clear value array for the range
+  const from = startRow === 0 ? 0 : startRow + 1;
+  for (let r = from; r < endRow; r++)
+    for (let c = 0; c < COLS; c++)
+      cellVal[r][c] = 0;
+
+  // 2. Place mines in chunks (duplicate rolls silently overwrite)
+  const mc = MINES_PER_CHUNK[n], cs = CHUNK_SIZE[n];
+  for (let f = startRow + 1; f < endRow - (cs - 1); f += cs)
+    for (let m = 0; m < mc; m++) {
+      const col = Math.floor(Math.random() * COLS);
+      const off = Math.floor(Math.random() * cs);
+      cellVal[f + off][col] = 9;
+    }
+
+  // 3. Recalculate neighbor counts for all non-mine cells in range
+  for (let r = startRow; r < Math.min(endRow + 1, maxFloors); r++)
+    for (let c = 0; c < COLS; c++)
+      if (cellVal[r][c] !== 9) {
+        let cnt = 0;
+        for (let dr = Math.max(r-1,0); dr <= Math.min(r+1,maxFloors-1); dr++)
+          for (let dc = Math.max(c-1,0); dc <= Math.min(c+1,8); dc++)
+            if (cellVal[dr][dc] === 9) cnt++;
+        cellVal[r][c] = cnt;
+      }
+
+  // 4. Reset states from max(startRow+1-12, 0) to end of board
+  const resetFrom = Math.max(startRow + 1 - 12, 0);
+  for (let r = resetFrom; r < maxFloors; r++)
+    for (let c = 0; c < COLS; c++)
+      cellState[r][c] = 0;
+
+  // 5. Reveal non-mine cells of row max(startRow-12, 0) so solver has a seed
+  const seedRow = Math.max(startRow - 12, 0);
+  for (let c = 0; c < COLS; c++)
+    if (cellVal[seedRow][c] !== 9) revealCell(c, seedRow);
+}
+
+// Constraint solver — guarantees the board is logically completable without guessing.
+// Rules 1 & 2 keep scanning after firing; Rule 3 restarts the scan from z.
+function preSolve() {
+  const hx = [], hy = [], hx2 = [], hy2 = [];
+  let regenCount = 0;
+  const MAX_REGEN = 500;
+
+  for (let z = 0; z < maxFloors - 1; ) {
+    let progress = false;
+
+    scanA:
+    for (let a = z; a < Math.min(z + 12, maxFloors); a++) {
+      for (let b = 0; b < COLS; b++) {
+        if (cellState[a][b] !== 1 || cellVal[a][b] === 0 || cellVal[a][b] === 9) continue;
+
+        let remaining = cellVal[a][b];
+        let e = 0;
+        for (let hr = Math.max(a-1,0); hr <= Math.min(a+1,maxFloors-1); hr++)
+          for (let hc = Math.max(b-1,0); hc <= Math.min(b+1,8); hc++) {
+            const st = cellState[hr][hc];
+            if      (st === 0) { hx[e] = hc; hy[e] = hr; e++; }
+            else if (st === 2)   remaining--;
+          }
+
+        if (!e) continue;
+
+        // Rule 1 — all mines accounted for: reveal all hidden neighbours
+        if (remaining === 0) {
+          for (let i = 0; i < e; i++) revealCell(hx[i], hy[i]);
+          progress = true;
+          continue; // keep scanning this pass
+        }
+        // Rule 2 — all hidden neighbours are mines: flag them
+        if (remaining === e) {
+          for (let i = 0; i < e; i++) cellState[hy[i]][hx[i]] = 2;
+          progress = true;
+          continue; // keep scanning this pass
+        }
+        // Rule 3 — subset intersection with a neighbouring numbered cell
+        let rule3Fired = false;
+        outer:
+        for (let K = Math.max(a-2,0); K <= Math.min(a+2,maxFloors-1); K++)
+          for (let I = Math.max(b-2,0); I <= Math.min(b+2,8); I++) {
+            if (K === a && I === b) continue;
+            if (cellState[K][I] !== 1 || cellVal[K][I] === 0 || cellVal[K][I] === 9) continue;
+
+            let d = cellVal[K][I], k = 0;
+            for (let hr = Math.max(K-1,0); hr <= Math.min(K+1,maxFloors-1); hr++)
+              for (let hc = Math.max(I-1,0); hc <= Math.min(I+1,8); hc++) {
+                const st = cellState[hr][hc];
+                if      (st === 0) { hx2[k] = hc; hy2[k] = hr; k++; }
+                else if (st === 2)   d--;
+              }
+
+            if (d < 0 || remaining < d) continue;
+
+            let notShared = 0;
+            for (let i = 0; i < e; i++)
+              if (Math.abs(hx[i]-I) >= 2 || Math.abs(hy[i]-K) >= 2) notShared++;
+
+            if (notShared === remaining - d) {
+              for (let i = 0; i < e; i++)
+                if (Math.abs(hx[i]-I) >= 2 || Math.abs(hy[i]-K) >= 2)
+                  { cellState[hy[i]][hx[i]] = 2; progress = true; rule3Fired = true; }
+              for (let i = 0; i < k; i++)
+                if (Math.abs(hx2[i]-b) >= 2 || Math.abs(hy2[i]-a) >= 2)
+                  { revealCell(hx2[i], hy2[i]); progress = true; rule3Fired = true; }
+              if (rule3Fired) break outer;
+            }
+          }
+
+        if (rule3Fired) break scanA; // Rule 3 fired — restart scan from z
+      }
+    }
+
+    if (!progress) {
+      if (++regenCount > MAX_REGEN) break;
+      // Regen window is chunk-size+1 so High-speed (cs=3) always gets at least one chunk
+      const regenEnd = Math.min(z + CHUNK_SIZE[n] + 1, maxFloors);
+      generateMines(z, regenEnd);
+      z = Math.max(z - 12, 0);
+    }
+
+    // Advance z to the next row that has unsolved cells
+    for (; z < maxFloors - 1; z++) {
+      let found = false;
+      for (let c = 0; c < COLS; c++)
+        if (cellState[z+1][c] === 0) { found = true; break; }
+      if (found) break;
+    }
+  }
+}
+
+// Board generation entry point (runs synchronously before gameplay)
+function generateBoard() {
+  maxFloors = FLOOR_COUNTS[n];
+
+  // Allocate board (typed arrays keep memory tight)
+  cellVal   = Array.from({length: maxFloors}, () => new Int8Array(COLS));
+  cellState = Array.from({length: maxFloors}, () => new Uint8Array(COLS));
+
+  // Generate mines and seed row 0 for the solver
+  generateMines(0, maxFloors);
+
+  preSolve();
+
+  // Reset all states to hidden — player never sees the solve
+  for (let r = 0; r < maxFloors; r++)
+    for (let c = 0; c < COLS; c++)
+      cellState[r][c] = 0;
+
+  // Count total mines
+  fa = 0;
+  for (let r = 0; r < maxFloors; r++)
+    for (let c = 0; c < COLS; c++)
+      if (cellVal[r][c] === 9) fa++;
+
+  // Reveal row 0 (floor 1 always starts uncovered)
+  D = 0;
+  for (let c = 0; c < COLS; c++)
+    if (cellVal[0][c] !== 9) revealCell(c, 0);
+
+  // Initialise game variables
+  A = 1; C = 0; ea = fa; E = 1; F = 0; q = 0;
+  H = 749; J = 149; ja = 0;
+  da = -8049; ga = 0; skipKey = false; skipHeld = false;
+
+  p = 4;
+}
+
+// ── HUD helpers ───────────────────────────────────────────────────────────────
+function calcEa() {
+  // Displayed mine count = total − flags − revealed mines − unflagged mines past boundary
+  const boundaryRow = Math.floor(Math.floor(da / 50) / CELL) - 1;
+  let count = fa;
+  for (let r = 0; r < maxFloors; r++)
+    for (let c = 0; c < COLS; c++) {
+      if      (cellState[r][c] === 2)                        count--; // flagged
+      else if (cellState[r][c] === 1 && cellVal[r][c] === 9) count--; // revealed mine
+      else if (r <= boundaryRow && cellVal[r][c] === 9)       count--; // past-boundary hidden mine
+    }
+  ea = count;
+}
+
+// ── Section renderers ─────────────────────────────────────────────────────────
+function drawHeader() {
+  fillRect(0, 0, CANVAS_W, HEADER_H, CLR.header);
+
+  label(A + 'F', 30, 20, CLR.green, 8);
+
+  label('TIME', 90, 8, CLR.white, 6);
+  const secs = Math.floor(C / 50);
+  label(`${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')}`,
+        90, 24, CLR.green, 7);
+
+  if (p > 2) label(MODE_SHORT[n], 150, 6, MODE_COLORS[n], 6);
+
+  // Logo — returns to title from any active state
+  fillRect(140, 11, 20, 20, hit(150,21,20,20) ? CLR.white : CLR.logoFill);
+  label('D', 150, 21, CLR.logoText, 8);
+  if (clicked && hit(150,21,20,20) && p >= 2) { n = 0; p = 1; }
+
+  label('MINE', 210, 8, CLR.white, 6);
+  label(String(ea), 210, 24, CLR.green, 7);
+
+  label('MISS', 270, 8, CLR.orange, 6);
+  label(String(D), 270, 24, CLR.green, 7);
+}
+
+function drawPlayBorder() {
+  ctx.strokeStyle = CLR.white; ctx.lineWidth = 1;
+  ctx.strokeRect(59.5, 39.5, 182, 322);
+}
+
+function drawGrid() {
+  const d = Math.floor(da / 50);
+  const boundaryRow = Math.floor(d / CELL) - 1; // row one step below visible bottom
+
+  const floorLabels = []; // collect label draws; render after clip is released
+
+  // Clip to play area — cells partially visible at top and bottom edges
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(GRID_X, HEADER_H, COLS * CELL, 321);
+  ctx.clip();
+
+  const totalRows = maxFloors > 0 ? maxFloors : 18;
+  for (let row = 0; row < totalRows; row++) {
+    const cellY = ROW_BASE - CELL * row + d;
+    if (cellY + CELL < HEADER_H || cellY >= VIS_MAX) continue; // skip fully off-screen
+
+    let rowHasHidden = false;
+    if (maxFloors > 0)
+      for (let c = 0; c < COLS; c++)
+        if (cellState[row][c] !== 1 && cellVal[row][c] !== 9) { rowHasHidden = true; break; }
+
+    for (let col = 0; col < COLS; col++) {
+      const state = maxFloors > 0 ? cellState[row][col] : 0;
+      const val   = maxFloors > 0 ? cellVal[row][col]   : 0;
+      drawCell(GRID_X + CELL*col, cellY, state, val);
+    }
+
+    const danger = rowHasHidden && row <= boundaryRow + 3;
+    floorLabels.push({
+      text: (row+1) + 'F',
+      y: cellY + 10,
+      color: !rowHasHidden ? CLR.floorSafe : danger ? CLR.floorDanger : CLR.floorWarn,
+    });
+  }
+
+  // BOMB crosshair inside play-area clip
+  if (ja === 1) {
+    const g = gridCoords();
+    if (g) {
+      const bx = GRID_X + CELL * g.col;
+      const by = ROW_BASE - CELL * g.row + d;
+      ctx.strokeStyle = '#ff2222';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx - 3*CELL + 0.5, by - 3*CELL + 0.5, 7*CELL - 1, 7*CELL - 1);
+      ctx.beginPath();
+      ctx.moveTo(bx + CELL/2, by - 3*CELL);
+      ctx.lineTo(bx + CELL/2, by + 4*CELL);
+      ctx.moveTo(bx - 3*CELL, by + CELL/2);
+      ctx.lineTo(bx + 4*CELL, by + CELL/2);
+      ctx.stroke();
+    }
+  }
+
+  ctx.restore(); // release clip
+
+  // Floor labels — drawn unclipped so they appear in the left margin
+  ctx.font = '7px "Courier New", monospace';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  for (const lbl of floorLabels) {
+    ctx.fillStyle = lbl.color;
+    ctx.fillText(lbl.text, 56, lbl.y);
+  }
+}
+
+function fireBomb(centerCol, centerRow) {
+  ja = 2;
+  for (let dr = -3; dr <= 3; dr++)
+    for (let dc = -3; dc <= 3; dc++) {
+      const r = centerRow + dr, c = centerCol + dc;
+      if (r < 0 || r >= maxFloors || c < 0 || c >= COLS) continue;
+      if (cellState[r][c] === 1) continue;
+      if (cellVal[r][c] === 9) {
+        cellState[r][c] = 2; // flag the mine
+      } else {
+        revealCell(c, r); // normal reveal — flood-fills zeros
+      }
+    }
+}
+
+function calcSpeed() {
+  const floor = A;
+  if (n === 3) { // High-speed
+    E = Math.floor(floor / 10) + 10;
+  } else if (n === 2) { // Hard
+    E = floor < 30 ? 1 : floor < 60 ? 2 : floor < 90 ? 3 : floor < 120 ? 4 : 5;
+  } else { // Easy / Normal
+    E = floor < 50 ? 1 : floor < 100 ? 2 : floor < 150 ? 3 : 4;
+  }
+  if (H > 0 && H < 749) E = 0;
+}
+
+function advanceScroll() {
+  calcSpeed();
+  da += E;
+  if (ga > 0) { ga--; da += 100; }
+  if (skipHeld) da += 100;
+  const d = Math.floor(da / 50);
+  A = Math.max(1, Math.min(Math.floor(d / CELL) + 1, maxFloors));
+}
+
+function checkGameOver() {
+  const d = Math.floor(da / 50);
+  const row = Math.floor(d / CELL) - 1;
+  if (row < 0 || row >= maxFloors) return;
+  for (let c = 0; c < COLS; c++)
+    if (cellState[row][c] !== 1 && cellVal[row][c] !== 9) { p = 5; q = 0; return; }
+}
+
+function drawBottomBar() { fillRect(0, 361, CANVAS_W, 40, CLR.bottomBar); }
+
+function drawSidebar() {
+  label('SPEED', SIDEBAR_CX, 50, CLR.green, 6);
+  label(String(E), SIDEBAR_CX, 62, CLR.cyan, 7);
+
+  label('PAUSE', SIDEBAR_CX, 78, CLR.green, 6);
+  sideBtn(SIDEBAR_CX, 96, 24, 16, '⏸', F ? '#665500' : '#333', CLR.white);
+
+  label('SKIP', SIDEBAR_CX, 112, CLR.green, 6);
+  sideBtn(SIDEBAR_CX, 128, 24, 16, '⏩', '#333', CLR.white);
+
+  label('?MARK', SIDEBAR_CX, 148, CLR.green, 6);
+  fillRect(254, 154, 32, 2, '#555');
+  label(la ? '? MARK OFF' : '? MARK ON', SIDEBAR_CX, 163, CLR.green, 5);
+
+  ctx.strokeStyle = CLR.white; ctx.lineWidth = 1;
+  ctx.strokeRect(253.5, 180.5, 32, 181);
+  label('ITEM', SIDEBAR_CX, 188, CLR.yellow, 6);
+
+  label('WATCH', SIDEBAR_CX, 200, CLR.white, 6);
+  sideBtn(SIDEBAR_CX, 218, 24, 24, '⏱', H === 749 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+  label(String(Math.floor((H+49)/50)), SIDEBAR_CX, 234, CLR.white, 6);
+
+  label('SCOPE', SIDEBAR_CX, 250, CLR.white, 6);
+  sideBtn(SIDEBAR_CX, 268, 24, 24, '◎', J === 149 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+  label(String(Math.floor((J+49)/50)), SIDEBAR_CX, 285, CLR.white, 6);
+
+  label('BOMB', SIDEBAR_CX, 303, CLR.white, 6);
+  sideBtn(SIDEBAR_CX, 321, 24, 24, '◉', ja === 0 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+}
+
+// ── Screen renderers ──────────────────────────────────────────────────────────
+function drawGameplay() {
+  fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.bg);
+  drawHeader();
+  drawGrid();
+  drawPlayBorder();
+  drawBottomBar();
+  drawSidebar();
+}
+
+function drawTitleScreen() {
+  fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.bg);
+  label('Mine Scroller', 150, 80, CLR.white, 18);
+  label('ver 2.0', 150, 104, CLR.labelDim, 7);
+
+  for (let i = 0; i < 4; i++) {
+    const cy  = 180 + 40 * i;
+    const col = MODE_COLORS[i];
+    fillRect(60, cy-10, 180, 20, hit(150,cy,180,24) ? '#2a2a40' : '#181828');
+    strokeRect(60, cy-10, 180, 20, col);
+    label(MODE_NAMES[i], 150, cy, col, 9);
+    if (clicked && hit(150,cy,180,24)) { n = i; p = 3; }
+  }
+  label('Left click a mode to start', 150, 360, CLR.labelDim, 6);
+}
+
+function drawCentredBox(cy, w, h, txt, tc) {
+  fillRect(150-w/2, cy-h/2, w, h, CLR.resultBg);
+  strokeRect(150-w/2, cy-h/2, w, h, CLR.labelDim);
+  label(txt, 150, cy, tc, 8);
+}
+
+function drawResultOverlay() {
+  fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.overlay);
+  // Game-over: credit floors below the failed row (A-1); game-clear: all floors
+  const floors = p === 6 ? A : Math.max(0, A - 1);
+  const secs   = Math.floor(C / 50);
+  const score  = floors * 500 - C - D * 500;
+  if (q > 5) { fillRect(55,152,190,22,CLR.resultBg); label('- RESULT -',150,163,'#aaccff',8); }
+  const lines = [
+    [`${floors}F × 500`, `= ${floors * 500}`],
+    [`time (${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')})`, `= -${C}`],
+    [`miss × 500`, `= -${D * 500}`],
+    [`TOTAL`, `= ${score}`],
+  ];
+  for (let i = 0; i < lines.length; i++)
+    if (q > 10 + i * 10) {
+      const ly = 186 + i * 22;
+      fillRect(55, ly - 9, 190, 20, CLR.resultBg);
+      const clr = i === 3 ? CLR.yellow : '#aaffaa';
+      label(lines[i][0], 105, ly, clr, 7, 'left');
+      label(lines[i][1], 244, ly, clr, 7, 'right');
+    }
+  if (q > 55) {
+    drawCentredBox(330, 160, 20, 'Click to return to title', CLR.white);
+    if (clicked && hit(150, 330, 160, 20)) { n = 0; p = 1; }
+  }
+}
+
+function drawGameOver() {
+  drawGameplay();
+  fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.overlay);
+  label('GAME OVER', 150, 100, '#ff4444', 20);
+  drawResultOverlay();
+}
+
+function drawGameClear() {
+  drawGameplay();
+  fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.overlay);
+  label('Congratulations!', 150, 70, CLR.yellow, 9);
+  label('Game Clear', 150, 100, CLR.green, 20);
+  drawResultOverlay();
+}
+
+// ── Player interaction (Stage 6) ─────────────────────────────────────────────
+function gridCoords() {
+  // Convert canvas mouse coords to board row/col using current scroll
+  if (mx < 60 || mx > 238 || my < 40 || my > 359) return null;
+  const d   = Math.floor(da / 50);
+  const col = Math.floor((mx - 60) / CELL);
+  const row = Math.floor((319 - (my - 40) + d) / CELL);
+  if (col < 0 || col >= COLS || row < 0 || row >= maxFloors) return null;
+  return { col, row };
+}
+
+function handleGridClick(left) {
+  const g = gridCoords();
+  if (!g) return;
+  const { col, row } = g;
+
+  // BOMB armed: next left-click fires the 7×7 blast
+  if (left && ja === 1) { fireBomb(col, row); return; }
+
+  const st = cellState[row][col];
+
+  if (left) {
+    if (st === 0 || st === 3) {
+      // Normal reveal or ? reveal
+      if (cellVal[row][col] === 9) { ga = 20; }
+      revealCell(col, row);
+    } else if (st === 1 && cellVal[row][col] > 0) {
+      // Chord click: count adjacent flags + revealed mines
+      let flagCount = 0;
+      for (let dr = -1; dr <= 1; dr++)
+        for (let dc = -1; dc <= 1; dc++) {
+          if (!dr && !dc) continue;
+          const nr = row+dr, nc = col+dc;
+          if (nr < 0 || nr >= maxFloors || nc < 0 || nc >= COLS) continue;
+          if (cellState[nr][nc] === 2) flagCount++;
+          if (cellState[nr][nc] === 1 && cellVal[nr][nc] === 9) flagCount++;
+        }
+      if (flagCount === cellVal[row][col]) {
+        for (let dr = -1; dr <= 1; dr++)
+          for (let dc = -1; dc <= 1; dc++) {
+            if (!dr && !dc) continue;
+            const nr = row+dr, nc = col+dc;
+            if (nr < 0 || nr >= maxFloors || nc < 0 || nc >= COLS) continue;
+            if (cellState[nr][nc] === 0 || cellState[nr][nc] === 3) {
+              if (cellVal[nr][nc] === 9) ga = 20;
+              revealCell(nc, nr);
+            }
+          }
+      }
+    }
+  } else {
+    // Right-click flag cycle
+    if (st === 0) cellState[row][col] = 2;
+    else if (st === 2) cellState[row][col] = la ? 3 : 0;
+    else if (st === 3) cellState[row][col] = 0;
+  }
+}
+
+// ── Win check ─────────────────────────────────────────────────────────────────
+function checkWin() {
+  for (let r = 0; r < maxFloors; r++)
+    for (let c = 0; c < COLS; c++)
+      if (cellState[r][c] !== 1 && cellVal[r][c] !== 9) return;
+  ea = 0; p = 6; q = 0;
+}
+
+// ── Main render dispatch ──────────────────────────────────────────────────────
+function render() {
+  switch (p) {
+    case 1:
+      drawTitleScreen();
+      break;
+
+    case 3:
+      // Draw the waiting frame first, then schedule generation on the next task so
+      // the browser actually paints this frame before the synchronous work begins.
+      fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.bg);
+      label('Generating board…', 150, 200, CLR.labelDim, 9);
+      if (!generating) {
+        generating = true;
+        setTimeout(() => {
+          try { generateBoard(); }
+          catch(e) { console.error(e); p = 1; }
+          finally { generating = false; }
+        }, 0);
+      }
+      break;
+
+    case 4:
+      // Sidebar buttons (always active, even when paused)
+      // SKIP: key held OR button held
+      skipHeld = skipKey || (mouseHeld && hit(SIDEBAR_CX, 128, 24, 16));
+      if (clicked) {
+        if (hit(SIDEBAR_CX, 96,  24, 16)) F = F ? 0 : 1;
+        if (hit(SIDEBAR_CX, 163, 60, 12)) la = la ? 0 : 1;
+        if (hit(SIDEBAR_CX, 218, 24, 24) && H === 749) H = 748;
+        if (hit(SIDEBAR_CX, 268, 24, 24) && J === 149) J = 148;
+        if (hit(SIDEBAR_CX, 321, 24, 24) && ja === 0) ja = 1;
+        if (!hit(SIDEBAR_CX, 128, 24, 16)) handleGridClick(true);
+      }
+      if (rightClicked) handleGridClick(false);
+
+      if (!F) {
+        C++;
+        advanceScroll();
+        if (H > 0 && H < 749) H--;
+        if (J > 0 && J < 149) J--;
+        calcEa();
+        checkGameOver();
+        if (p === 4) checkWin();
+      }
+      drawGameplay();
+      break;
+
+    case 5: q++; drawGameOver();  break;
+    case 6: q++; drawGameClear(); break;
+  }
+
+  clicked = false;
+  rightClicked = false;
+}
+
+// ── 50 fps loop ───────────────────────────────────────────────────────────────
+const FRAME_MS = 20;
+let   lastTime = 0;
+function loop(ts) {
+  if (ts - lastTime >= FRAME_MS) { render(); lastTime = ts; }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

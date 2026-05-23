@@ -289,7 +289,6 @@
 <header>
     <h1>The Game</h1>
     <div class="controls">
-        <button onclick="game.sortHand()">Sort Hand</button>
         <button onclick="game.undo()">Undo</button>
         <button onclick="game.restart()">New Game</button>
     </div>
@@ -311,6 +310,7 @@
 <div id="status-bar">
     <div id="status-text"></div>
     <button id="draw-btn" onclick="game.endTurn()">Draw Cards</button>
+    <button onclick="game.sortHand()">Sort Hand</button>
 </div>
 
 <div class="rules-hint">
