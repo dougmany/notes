@@ -5,7 +5,7 @@
   <title>Mine Scroller</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #111; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    body { background: #c8d4de; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
     #cv { image-rendering: auto; cursor: default; }
   </style>
 </head>
@@ -25,14 +25,14 @@ const VIS_MIN    = 20;
 const VIS_MAX    = 380;
 
 const MODE_NAMES   = ['Easy Mode', 'Normal Mode', 'Hard Mode', 'High-speed Mode'];
-const MODE_COLORS  = ['#88ff44', '#ffff44', '#ff8844', '#44ccff'];
+const MODE_COLORS  = ['#1a7a00', '#aa7a00', '#cc3300', '#0060aa'];
 const MODE_SHORT   = ['EASY', 'NORMAL', 'HARD', 'HIGH-SPEED'];
 const FLOOR_COUNTS = [100, 200, 150, 400];
 const MINES_PER_CHUNK = [2, 4, 7, 2];  // mines placed per chunk per mode
 const CHUNK_SIZE  = [2, 2, 2, 3];      // rows per chunk per mode
 
-// Number colours (1-8) on dark background
-const NUM_CLR = ['', '#80ffff', '#00ff44', '#ff4444', '#4466ff', '#ff8844', '#44ccff', '#ccff44', '#ffffff'];
+// Number colours (1-8) on light background — classic minesweeper palette
+const NUM_CLR = ['', '#0060cc', '#006000', '#cc0000', '#000099', '#880000', '#006677', '#660066', '#303030'];
 
 // ── Canvas ────────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('cv');
@@ -47,28 +47,28 @@ ctx.scale(SCALE * DPR, SCALE * DPR);
 
 // ── Colours ───────────────────────────────────────────────────────────────────
 const CLR = {
-  bg          : '#1a1b2e',
-  header      : '#000000',
-  bottomBar   : '#101820',
-  cellHidden  : '#2e3244',
-  cellTop     : '#44475a',
-  cellBorder  : '#4a4e6a',
-  cellRevealed: '#1c4d5c',
-  cellMineBg  : '#5c1c1c',
-  floorSafe   : '#446644',
-  floorWarn   : '#888800',
-  floorDanger : '#cc2222',
-  white       : '#ffffff',
-  yellow      : '#ffff44',
-  green       : '#44ff88',
-  cyan        : '#00c0ff',
-  orange      : '#ff8840',
-  logoFill    : '#ffff00',
-  logoText    : '#000000',
-  itemBox     : '#2a5c28',
-  labelDim    : '#888888',
-  overlay     : 'rgba(0,0,0,0.55)',
-  resultBg    : 'rgba(20,30,50,0.92)',
+  bg          : '#edf0f5',
+  header      : '#d0dae6',
+  bottomBar   : '#c4d0dc',
+  cellHidden  : '#b0c0ce',
+  cellTop     : '#ccd8e4',
+  cellBorder  : '#8898aa',
+  cellRevealed: '#e4eef8',
+  cellMineBg  : '#f4cccc',
+  floorSafe   : '#1a6a2e',
+  floorWarn   : '#886000',
+  floorDanger : '#c81414',
+  white       : '#1a202c',
+  yellow      : '#886000',
+  green       : '#1a6a2e',
+  cyan        : '#0060a8',
+  orange      : '#b84800',
+  logoFill    : '#f0c030',
+  logoText    : '#1a202c',
+  itemBox     : '#2e7d3a',
+  labelDim    : '#556677',
+  overlay     : 'rgba(160,180,200,0.72)',
+  resultBg    : 'rgba(228,238,250,0.96)',
 };
 
 // ── Game state ────────────────────────────────────────────────────────────────
@@ -153,7 +153,7 @@ function drawCell(cellX, cellY, state, val) {
     // Revealed
     if (val === 9) {
       fillRect(cellX+1, cellY+1, 18, 18, CLR.cellMineBg);
-      label('✸', cellX+10, cellY+11, '#ff4040', 11);
+      label('✸', cellX+10, cellY+11, '#cc1414', 11);
     } else {
       fillRect(cellX+1, cellY+1, 18, 18, CLR.cellRevealed);
       if (val > 0) label(String(val), cellX+10, cellY+11, NUM_CLR[val], 9);
@@ -164,19 +164,19 @@ function drawCell(cellX, cellY, state, val) {
     const scopeShow = scopeActive && val === 9 && (state === 0 || state === 3);
     const wrongFlag = scopeActive && state === 2 && val !== 9;
     if (scopeShow) {
-      fillRect(cellX+1, cellY+1, 18, 18, '#0d2e10');
-      fillRect(cellX+1, cellY+1, 18,  1, '#1a4a1a');
-      fillRect(cellX+1, cellY+1,  1, 18, '#1a4a1a');
-      ctx.strokeStyle = '#44ff44'; ctx.lineWidth = 1;
+      fillRect(cellX+1, cellY+1, 18, 18, '#c4f0cc');
+      fillRect(cellX+1, cellY+1, 18,  1, '#90d89a');
+      fillRect(cellX+1, cellY+1,  1, 18, '#90d89a');
+      ctx.strokeStyle = '#1a6a2e'; ctx.lineWidth = 1;
       ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
-      label('✸', cellX+10, cellY+11, '#44ff88', 11);
+      label('✸', cellX+10, cellY+11, '#1a6a2e', 11);
     } else if (wrongFlag) {
-      fillRect(cellX+1, cellY+1, 18, 18, '#2e1a00');
-      fillRect(cellX+1, cellY+1, 18,  1, '#4a2e00');
-      fillRect(cellX+1, cellY+1,  1, 18, '#4a2e00');
-      ctx.strokeStyle = '#ff8800'; ctx.lineWidth = 1;
+      fillRect(cellX+1, cellY+1, 18, 18, '#fde8c0');
+      fillRect(cellX+1, cellY+1, 18,  1, '#f5c878');
+      fillRect(cellX+1, cellY+1,  1, 18, '#f5c878');
+      ctx.strokeStyle = '#b84800'; ctx.lineWidth = 1;
       ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
-      label('⚑', cellX+10, cellY+11, '#ff8800', 9);
+      label('⚑', cellX+10, cellY+11, '#b84800', 9);
     } else {
       // Hidden, flag, or ?
       fillRect(cellX+1, cellY+1, 18, 18, CLR.cellHidden);
@@ -184,7 +184,7 @@ function drawCell(cellX, cellY, state, val) {
       fillRect(cellX+1, cellY+1,  1, 18, CLR.cellTop);
       ctx.strokeStyle = CLR.cellBorder; ctx.lineWidth = 1;
       ctx.strokeRect(cellX+0.5, cellY+0.5, 19, 19);
-      if (state === 2) label('⚑', cellX+10, cellY+11, '#ff4040', 9);
+      if (state === 2) label('⚑', cellX+10, cellY+11, '#cc0000', 9);
       if (state === 3) label('?', cellX+10, cellY+11, CLR.yellow,  9);
     }
   }
@@ -472,7 +472,7 @@ function drawGrid() {
     if (g) {
       const bx = GRID_X + CELL * g.col;
       const by = ROW_BASE - CELL * g.row + d;
-      ctx.strokeStyle = '#ff2222';
+      ctx.strokeStyle = '#cc1414';
       ctx.lineWidth = 1;
       ctx.strokeRect(bx - 3*CELL + 0.5, by - 3*CELL + 0.5, 7*CELL - 1, 7*CELL - 1);
       ctx.beginPath();
@@ -546,13 +546,13 @@ function drawSidebar() {
   label(String(E), SIDEBAR_CX, 62, CLR.cyan, 7);
 
   label('PAUSE', SIDEBAR_CX, 78, CLR.green, 6);
-  sideBtn(SIDEBAR_CX, 96, 24, 16, '⏸', F ? '#665500' : '#333', CLR.white);
+  sideBtn(SIDEBAR_CX, 96, 24, 16, '⏸', F ? '#c8a020' : '#b8c8d4', CLR.white);
 
   label('SKIP', SIDEBAR_CX, 112, CLR.green, 6);
-  sideBtn(SIDEBAR_CX, 128, 24, 16, '⏩', '#333', CLR.white);
+  sideBtn(SIDEBAR_CX, 128, 24, 16, '⏩', '#b8c8d4', CLR.white);
 
   label('?MARK', SIDEBAR_CX, 148, CLR.green, 6);
-  fillRect(254, 154, 32, 2, '#555');
+  fillRect(254, 154, 32, 2, '#8898aa');
   label(la ? '? MARK OFF' : '? MARK ON', SIDEBAR_CX, 163, CLR.green, 5);
 
   ctx.strokeStyle = CLR.white; ctx.lineWidth = 1;
@@ -560,15 +560,15 @@ function drawSidebar() {
   label('ITEM', SIDEBAR_CX, 188, CLR.yellow, 6);
 
   label('WATCH', SIDEBAR_CX, 200, CLR.white, 6);
-  sideBtn(SIDEBAR_CX, 218, 24, 24, '⏱', H === 749 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+  sideBtn(SIDEBAR_CX, 218, 24, 24, '⏱', H === 749 ? CLR.itemBox : '#98b8a0', '#ffffff');
   label(String(Math.floor((H+49)/50)), SIDEBAR_CX, 234, CLR.white, 6);
 
   label('SCOPE', SIDEBAR_CX, 250, CLR.white, 6);
-  sideBtn(SIDEBAR_CX, 268, 24, 24, '◎', J === 149 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+  sideBtn(SIDEBAR_CX, 268, 24, 24, '◎', J === 149 ? CLR.itemBox : '#98b8a0', '#ffffff');
   label(String(Math.floor((J+49)/50)), SIDEBAR_CX, 285, CLR.white, 6);
 
   label('BOMB', SIDEBAR_CX, 303, CLR.white, 6);
-  sideBtn(SIDEBAR_CX, 321, 24, 24, '◉', ja === 0 ? CLR.itemBox : '#1a3c18', '#aaffaa');
+  sideBtn(SIDEBAR_CX, 321, 24, 24, '◉', ja === 0 ? CLR.itemBox : '#98b8a0', '#ffffff');
 }
 
 // ── Screen renderers ──────────────────────────────────────────────────────────
@@ -589,7 +589,7 @@ function drawTitleScreen() {
   for (let i = 0; i < 4; i++) {
     const cy  = 180 + 40 * i;
     const col = MODE_COLORS[i];
-    fillRect(60, cy-10, 180, 20, hit(150,cy,180,24) ? '#2a2a40' : '#181828');
+    fillRect(60, cy-10, 180, 20, hit(150,cy,180,24) ? '#b8cad8' : '#d4dce8');
     strokeRect(60, cy-10, 180, 20, col);
     label(MODE_NAMES[i], 150, cy, col, 9);
     if (clicked && hit(150,cy,180,24)) { n = i; p = 3; }
@@ -609,7 +609,7 @@ function drawResultOverlay() {
   const floors = p === 6 ? A : Math.max(0, A - 1);
   const secs   = Math.floor(C / 50);
   const score  = floors * 500 - C - D * 500;
-  if (q > 5) { fillRect(55,152,190,22,CLR.resultBg); label('- RESULT -',150,163,'#aaccff',8); }
+  if (q > 5) { fillRect(55,152,190,22,CLR.resultBg); label('- RESULT -',150,163,'#004488',8); }
   const lines = [
     [`${floors}F × 500`, `= ${floors * 500}`],
     [`time (${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')})`, `= -${C}`],
@@ -620,7 +620,7 @@ function drawResultOverlay() {
     if (q > 10 + i * 10) {
       const ly = 186 + i * 22;
       fillRect(55, ly - 9, 190, 20, CLR.resultBg);
-      const clr = i === 3 ? CLR.yellow : '#aaffaa';
+      const clr = i === 3 ? CLR.yellow : '#1a6a2e';
       label(lines[i][0], 105, ly, clr, 7, 'left');
       label(lines[i][1], 244, ly, clr, 7, 'right');
     }
@@ -633,7 +633,7 @@ function drawResultOverlay() {
 function drawGameOver() {
   drawGameplay();
   fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.overlay);
-  label('GAME OVER', 150, 100, '#ff4444', 20);
+  label('GAME OVER', 150, 100, '#cc1414', 20);
   drawResultOverlay();
 }
 
