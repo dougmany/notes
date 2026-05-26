@@ -280,8 +280,92 @@
         .modal p  { font-size: 1.05rem; opacity: 0.8; margin: 0; }
         .modal .btn-row { display: flex; gap: 12px; margin-top: 8px; }
 
-        #win-modal  h2 { color: gold; }
-        #lose-modal h2 { color: #ff6b6b; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-box {
+            background: #1a3d1a;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 14px;
+            padding: 30px 36px;
+            max-width: 460px;
+            width: 92%;
+            max-height: 92vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .result-box h2 { font-size: 2.4rem; margin: 0 0 4px; }
+        .result-box > p { margin: 0 0 16px; opacity: 0.72; font-size: 0.9rem; }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            animation: fadeSlideIn 0.3s ease forwards;
+        }
+
+        .stat-name { font-size: 0.85rem; opacity: 0.7; }
+        .stat-val  { font-weight: bold; font-size: 1rem; }
+
+        .hs-section {
+            margin-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            padding-top: 14px;
+            opacity: 0;
+            animation: fadeSlideIn 0.3s ease forwards;
+        }
+
+        .hs-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 10px;
+        }
+
+        .hs-row {
+            display: grid;
+            grid-template-columns: 26px 1fr 1fr 1fr 1fr;
+            font-size: 0.78rem;
+            padding: 3px 4px;
+            border-radius: 4px;
+            text-align: right;
+        }
+
+        .hs-row > span:first-child { text-align: left; }
+
+        .hs-row.hs-head {
+            opacity: 0.45;
+            font-size: 0.67rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-bottom: 2px;
+        }
+
+        .hs-row.hs-current {
+            background: rgba(80,200,80,0.18);
+            color: #90f090;
+            font-weight: bold;
+        }
+
+        .hs-not-ranked {
+            font-size: 0.72rem;
+            opacity: 0.45;
+            margin-top: 8px;
+        }
+
+        .result-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 22px;
+        }
     </style>
 </head>
 <body>
@@ -323,18 +407,15 @@
 
 <div id="error-msg"></div>
 
-<div id="win-modal" class="modal">
-    <h2>YOU WIN!</h2>
-    <p>Every card has been played!</p>
-    <button onclick="game.restart()">Play Again</button>
-</div>
-
-<div id="lose-modal" class="modal">
-    <h2>GAME OVER</h2>
-    <p id="lose-msg">No valid moves remaining.</p>
-    <div class="btn-row">
-        <button id="lose-undo-btn" onclick="game.undo()">Undo</button>
-        <button onclick="game.restart()">New Game</button>
+<div id="result-modal" class="modal">
+    <div class="result-box">
+        <h2 id="result-title"></h2>
+        <p id="result-subtitle"></p>
+        <div id="result-body"></div>
+        <div class="result-btns">
+            <button id="r-undo-btn" onclick="game.undoFromResult()" style="display:none">Undo Last Move</button>
+            <button onclick="game.restart()">New Game</button>
+        </div>
     </div>
 </div>
 
@@ -350,6 +431,9 @@ class TheGame {
         this.selectedCardIndex = null;
         this.history = [];
         this.gameOver = false;
+        this.reversesPlayed = 0;
+        this.longestTurn = 0;
+        this.largestGap = 0;
 
         this.restart();
     }
@@ -366,11 +450,13 @@ class TheGame {
         this.selectedCardIndex = null;
         this.history = [];
         this.gameOver = false;
+        this.reversesPlayed = 0;
+        this.longestTurn = 0;
+        this.largestGap = 0;
 
         for (let i = 0; i < 8; i++) this.hand.push(this.deck.pop());
 
-        document.getElementById('win-modal').style.display = 'none';
-        document.getElementById('lose-modal').style.display = 'none';
+        document.getElementById('result-modal').style.display = 'none';
         this.render();
     }
 
@@ -403,7 +489,9 @@ class TheGame {
             pileCounts: [...this.pileCounts],
             hand: [...this.hand],
             deck: [...this.deck],
-            cardsPlayedThisTurn: this.cardsPlayedThisTurn
+            cardsPlayedThisTurn: this.cardsPlayedThisTurn,
+            reversesPlayed: this.reversesPlayed,
+            largestGap: this.largestGap,
         });
         if (this.history.length > 50) this.history.shift();
     }
@@ -416,9 +504,11 @@ class TheGame {
         this.hand = s.hand;
         this.deck = s.deck;
         this.cardsPlayedThisTurn = s.cardsPlayedThisTurn;
+        this.reversesPlayed = s.reversesPlayed;
+        this.largestGap = s.largestGap;
         this.selectedCardIndex = null;
         this.gameOver = false;
-        document.getElementById('lose-modal').style.display = 'none';
+        document.getElementById('result-modal').style.display = 'none';
         this.render();
     }
 
@@ -448,11 +538,18 @@ class TheGame {
         if (!this.canPlay(card, pileIndex)) return;
 
         this.saveState();
+        const gap = Math.abs(card - this.piles[pileIndex]);
+        const rev = this.isReverse(card, pileIndex);
         this.piles[pileIndex] = card;
         this.pileCounts[pileIndex]++;
         this.hand.splice(this.selectedCardIndex, 1);
         this.selectedCardIndex = null;
         this.cardsPlayedThisTurn++;
+        if (rev) {
+            this.reversesPlayed++;
+        } else if (gap > this.largestGap) {
+            this.largestGap = gap;
+        }
 
         this.render();
         this.checkGameState();
@@ -466,6 +563,7 @@ class TheGame {
             return;
         }
 
+        if (this.cardsPlayedThisTurn > this.longestTurn) this.longestTurn = this.cardsPlayedThisTurn;
         while (this.hand.length < 8 && this.deck.length > 0) {
             this.hand.push(this.deck.pop());
         }
@@ -477,13 +575,13 @@ class TheGame {
     }
 
     checkGameState() {
-        // Win: deck and hand both empty
+        if (this.cardsPlayedThisTurn > this.longestTurn) this.longestTurn = this.cardsPlayedThisTurn;
+
         if (this.deck.length === 0 && this.hand.length === 0) {
-            document.getElementById('win-modal').style.display = 'flex';
+            this.showResult(true);
             return;
         }
 
-        // Loss: can't make minimum required plays
         const minPlays = this.deck.length > 0 ? 2 : 1;
         if (this.cardsPlayedThisTurn < minPlays && this.hand.length > 0) {
             const stuck = !this.hand.some(card =>
@@ -491,14 +589,100 @@ class TheGame {
             );
             if (stuck) {
                 this.gameOver = true;
-                const needed = minPlays - this.cardsPlayedThisTurn;
-                document.getElementById('lose-msg').textContent =
-                    `No valid moves — needed to play ${needed} more card${needed > 1 ? 's' : ''} this turn.`;
-                document.getElementById('lose-undo-btn').style.display =
-                    this.history.length > 0 ? 'inline-block' : 'none';
-                document.getElementById('lose-modal').style.display = 'flex';
+                this.showResult(false);
             }
         }
+    }
+
+    getHighScores() {
+        try { return JSON.parse(localStorage.getItem('tg_hs')) || []; }
+        catch { return []; }
+    }
+
+    recordHighScore(entry) {
+        const list = this.getHighScores();
+        list.push(entry);
+        list.sort((a, b) => b.cards !== a.cards ? b.cards - a.cards : b.reverses - a.reverses);
+        const rank = list.indexOf(entry) + 1;
+        if (list.length > 10) list.length = 10;
+        try { localStorage.setItem('tg_hs', JSON.stringify(list)); } catch {}
+        return { list, rank: rank <= 10 ? rank : -1 };
+    }
+
+    showResult(won) {
+        const totalPlayed = this.pileCounts.reduce((a, b) => a + b, 0);
+        const entry = {
+            cards: totalPlayed,
+            reverses: this.reversesPlayed,
+            longestTurn: this.longestTurn,
+            largestGap: this.largestGap,
+        };
+        const { list, rank } = this.recordHighScore(entry);
+
+        document.getElementById('result-title').textContent = won ? 'YOU WIN!' : 'GAME OVER';
+        document.getElementById('result-title').style.color = won ? 'gold' : '#ff6b6b';
+        document.getElementById('result-subtitle').textContent = won
+            ? 'Every card has been played!'
+            : 'No valid moves remaining.';
+
+        const body = document.getElementById('result-body');
+        body.innerHTML = '';
+        let delay = 0.1;
+
+        const statsData = [
+            ['Cards Played', `${totalPlayed} / 98`],
+            ['Reverse Plays (10-away)', this.reversesPlayed],
+            ['Longest Turn', `${this.longestTurn} cards`],
+            ['Largest Gap', this.largestGap],
+        ];
+        statsData.forEach(([name, val]) => {
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+            row.style.animationDelay = `${delay}s`;
+            delay += 0.18;
+            row.innerHTML = `<span class="stat-name">${name}</span><span class="stat-val">${val}</span>`;
+            body.appendChild(row);
+        });
+
+        delay += 0.1;
+        const hsWrap = document.createElement('div');
+        hsWrap.className = 'hs-section';
+        hsWrap.style.animationDelay = `${delay}s`;
+
+        const hsLabel = document.createElement('div');
+        hsLabel.className = 'hs-label';
+        hsLabel.textContent = 'Top 10';
+        hsWrap.appendChild(hsLabel);
+
+        const header = document.createElement('div');
+        header.className = 'hs-row hs-head';
+        header.innerHTML = '<span>#</span><span>Cards</span><span>Rev</span><span>Turn</span><span>Gap</span>';
+        hsWrap.appendChild(header);
+
+        list.forEach((hs, i) => {
+            const row = document.createElement('div');
+            row.className = 'hs-row' + ((i + 1) === rank ? ' hs-current' : '');
+            row.innerHTML = `<span>#${String(i+1).padStart(2,'0')}</span><span>${hs.cards}/98</span><span>${hs.reverses}</span><span>${hs.longestTurn}</span><span>${hs.largestGap}</span>`;
+            hsWrap.appendChild(row);
+        });
+
+        if (rank === -1) {
+            const note = document.createElement('div');
+            note.className = 'hs-not-ranked';
+            note.textContent = `Your score: ${totalPlayed}/98 (not in top 10)`;
+            hsWrap.appendChild(note);
+        }
+
+        body.appendChild(hsWrap);
+
+        const undoBtn = document.getElementById('r-undo-btn');
+        undoBtn.style.display = (!won && this.history.length > 0) ? 'inline-block' : 'none';
+        document.getElementById('result-modal').style.display = 'flex';
+    }
+
+    undoFromResult() {
+        document.getElementById('result-modal').style.display = 'none';
+        this.undo();
     }
 
     showError(msg) {

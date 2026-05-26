@@ -71,6 +71,24 @@ const CLR = {
   resultBg    : 'rgba(228,238,250,0.96)',
 };
 
+// ── High Scores ───────────────────────────────────────────────────────────────
+let resultData = null;
+
+function getHighScores(mode) {
+  try { return JSON.parse(localStorage.getItem(`ms_hs_${mode}`)) || []; }
+  catch { return []; }
+}
+
+function recordHighScore(mode, entry) {
+  const list = getHighScores(mode);
+  list.push(entry);
+  list.sort((a, b) => b.score - a.score);
+  const rank = list.indexOf(entry) + 1;
+  if (list.length > 10) list.length = 10;
+  try { localStorage.setItem(`ms_hs_${mode}`, JSON.stringify(list)); } catch {}
+  return { list, rank: rank <= 10 ? rank : -1 };
+}
+
 // ── Game state ────────────────────────────────────────────────────────────────
 let p  = 1;   // state: 1=title 3=generating 4=play 5=game-over 6=game-clear
 let n  = 0;   // mode index
@@ -382,6 +400,7 @@ function generateBoard() {
   A = 1; C = 0; ea = fa; E = 1; F = 0; q = 0;
   H = 749; J = 149; ja = 0;
   da = -8049; ga = 0; skipKey = false; skipHeld = false;
+  resultData = null;
 
   p = 4;
 }
@@ -536,7 +555,15 @@ function checkGameOver() {
   const row = Math.floor(d / CELL) - 1;
   if (row < 0 || row >= maxFloors) return;
   for (let c = 0; c < COLS; c++)
-    if (cellState[row][c] !== 1 && cellVal[row][c] !== 9) { p = 5; q = 0; return; }
+    if (cellState[row][c] !== 1 && cellVal[row][c] !== 9) {
+      p = 5; q = 0;
+      const goFloors = Math.max(0, A - 1);
+      const goScore  = goFloors * 500 - C - D * 500;
+      const goEntry  = { score: goScore, floors: goFloors, frames: C, misses: D };
+      const { list: goList, rank: goRank } = recordHighScore(n, goEntry);
+      resultData = { score: goScore, floors: goFloors, highScores: goList, rank: goRank };
+      return;
+    }
 }
 
 function drawBottomBar() { fillRect(0, 361, CANVAS_W, 40, CLR.bottomBar); }
@@ -559,7 +586,7 @@ function drawSidebar() {
   ctx.strokeRect(253.5, 180.5, 32, 181);
   label('ITEM', SIDEBAR_CX, 188, CLR.yellow, 6);
 
-  label('WATCH', SIDEBAR_CX, 200, CLR.white, 6);
+  label('FREEZE', SIDEBAR_CX, 200, CLR.white, 6);
   sideBtn(SIDEBAR_CX, 218, 24, 24, '⏱', H === 749 ? CLR.itemBox : '#98b8a0', '#ffffff');
   label(String(Math.floor((H+49)/50)), SIDEBAR_CX, 234, CLR.white, 6);
 
@@ -575,7 +602,12 @@ function drawSidebar() {
 function drawGameplay() {
   fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.bg);
   drawHeader();
-  drawGrid();
+  if (F) {
+    fillRect(GRID_X, HEADER_H, COLS * CELL, 321, CLR.header);
+    label('PAUSED', 150, 201, CLR.labelDim, 10);
+  } else {
+    drawGrid();
+  }
   drawPlayBorder();
   drawBottomBar();
   drawSidebar();
@@ -605,28 +637,54 @@ function drawCentredBox(cy, w, h, txt, tc) {
 
 function drawResultOverlay() {
   fillRect(0, 0, CANVAS_W, CANVAS_H, CLR.overlay);
-  // Game-over: credit floors below the failed row (A-1); game-clear: all floors
-  const floors = p === 6 ? A : Math.max(0, A - 1);
-  const secs   = Math.floor(C / 50);
-  const score  = floors * 500 - C - D * 500;
-  if (q > 5) { fillRect(55,152,190,22,CLR.resultBg); label('- RESULT -',150,163,'#004488',8); }
+  if (!resultData) return;
+  const { score, floors, highScores, rank } = resultData;
+  const secs = Math.floor(C / 50);
+
+  if (q > 5) {
+    fillRect(55, 120, 190, 18, CLR.resultBg);
+    label('- RESULT -', 150, 129, '#004488', 8);
+  }
+
   const lines = [
     [`${floors}F × 500`, `= ${floors * 500}`],
     [`time (${String(Math.floor(secs/60)).padStart(2,'0')}:${String(secs%60).padStart(2,'0')})`, `= -${C}`],
     [`miss × 500`, `= -${D * 500}`],
     [`TOTAL`, `= ${score}`],
   ];
+  const lineYs = [146, 159, 172, 185];
   for (let i = 0; i < lines.length; i++)
     if (q > 10 + i * 10) {
-      const ly = 186 + i * 22;
-      fillRect(55, ly - 9, 190, 20, CLR.resultBg);
+      fillRect(55, lineYs[i] - 9, 190, 16, CLR.resultBg);
       const clr = i === 3 ? CLR.yellow : '#1a6a2e';
-      label(lines[i][0], 105, ly, clr, 7, 'left');
-      label(lines[i][1], 244, ly, clr, 7, 'right');
+      label(lines[i][0], 106, lineYs[i], clr, 7, 'left');
+      label(lines[i][1], 244, lineYs[i], clr, 7, 'right');
     }
-  if (q > 55) {
-    drawCentredBox(330, 160, 20, 'Click to return to title', CLR.white);
-    if (clicked && hit(150, 330, 160, 20)) { n = 0; p = 1; }
+
+  if (q > 50 && highScores.length > 0) {
+    fillRect(55, 196, 190, 158, CLR.resultBg);
+    label(`── TOP 10  ${MODE_SHORT[n]} ──`, 150, 207, MODE_COLORS[n], 6);
+    for (let i = 0; i < highScores.length; i++) {
+      const hs  = highScores[i];
+      const ry  = 219 + i * 13;
+      const cur = (i + 1) === rank;
+      if (cur) fillRect(56, ry - 6, 188, 11, '#cce0ff');
+      const rc = cur ? '#003399' : CLR.labelDim;
+      const sc = cur ? '#003399' : CLR.white;
+      const hsSecs = Math.floor(hs.frames / 50);
+      label(`#${String(i + 1).padStart(2, '0')}`, 76, ry, rc, 6, 'center');
+      label(String(hs.score), 158, ry, sc, 6, 'right');
+      label(`${hs.floors}F`, 184, ry, sc, 6, 'right');
+      label(`${String(Math.floor(hsSecs/60)).padStart(2,'0')}:${String(hsSecs%60).padStart(2,'0')}`,
+            237, ry, sc, 6, 'right');
+    }
+    if (rank === -1)
+      label(`your score: ${score}  (not in top 10)`, 150, 360, CLR.labelDim, 5);
+  }
+
+  if (q > 62) {
+    drawCentredBox(376, 160, 18, 'Click to return to title', CLR.white);
+    if (clicked && hit(150, 376, 160, 18)) { n = 0; p = 1; }
   }
 }
 
@@ -709,6 +767,10 @@ function checkWin() {
     for (let c = 0; c < COLS; c++)
       if (cellState[r][c] !== 1 && cellVal[r][c] !== 9) return;
   ea = 0; p = 6; q = 0;
+  const cwScore = A * 500 - C - D * 500;
+  const cwEntry = { score: cwScore, floors: A, frames: C, misses: D };
+  const { list: cwList, rank: cwRank } = recordHighScore(n, cwEntry);
+  resultData = { score: cwScore, floors: A, highScores: cwList, rank: cwRank };
 }
 
 // ── Main render dispatch ──────────────────────────────────────────────────────
@@ -739,13 +801,15 @@ function render() {
       skipHeld = skipKey || (mouseHeld && hit(SIDEBAR_CX, 128, 24, 16));
       if (clicked) {
         if (hit(SIDEBAR_CX, 96,  24, 16)) F = F ? 0 : 1;
-        if (hit(SIDEBAR_CX, 163, 60, 12)) la = la ? 0 : 1;
-        if (hit(SIDEBAR_CX, 218, 24, 24) && H === 749) H = 748;
-        if (hit(SIDEBAR_CX, 268, 24, 24) && J === 149) J = 148;
-        if (hit(SIDEBAR_CX, 321, 24, 24) && ja === 0) ja = 1;
-        if (!hit(SIDEBAR_CX, 128, 24, 16)) handleGridClick(true);
+        if (!F) {
+          if (hit(SIDEBAR_CX, 163, 60, 12)) la = la ? 0 : 1;
+          if (hit(SIDEBAR_CX, 218, 24, 24) && H === 749) H = 748;
+          if (hit(SIDEBAR_CX, 268, 24, 24) && J === 149) J = 148;
+          if (hit(SIDEBAR_CX, 321, 24, 24) && ja === 0) ja = 1;
+          if (!hit(SIDEBAR_CX, 128, 24, 16)) handleGridClick(true);
+        }
       }
-      if (rightClicked) handleGridClick(false);
+      if (!F && rightClicked) handleGridClick(false);
 
       if (!F) {
         C++;
